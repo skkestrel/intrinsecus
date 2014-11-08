@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Body Basics" 
         Height="768" Width="1024" 
-        Loaded="InvictusWindow_Loaded"
+        Loaded="IntrinsecusWindow_Loaded"
         Closing="MainWindow_Closing" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
 	<Window.Resources>
 		<SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e" />
@@ -17,7 +17,7 @@
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="120" />
-			<RowDefinition Height="100" />
+			<RowDefinition Height="90" />
 			<RowDefinition/>
 			<RowDefinition Height="125"/>
 			<RowDefinition Height="25"/>
@@ -26,7 +26,7 @@
 		<Viewbox x:Name="SkeletonViewbox" Margin="10" Grid.Row="1" Grid.RowSpan="3">
 			<Image x:Name="SkeletonImage" Source="{Binding ImageSource}" Stretch="Fill" />
 		</Viewbox>
-		<Label x:Name="ExerciseLabel" Content="Label" Grid.Row="1" RenderTransformOrigin="0.551,2.2" Grid.Column="1" Margin="10"/>
+		<Label x:Name="ExerciseLabel" Content="Exercise Name" Grid.Row="1" RenderTransformOrigin="0.551,2.2" Grid.Column="1" Margin="10" FontSize="36"/>
 		<Label x:Name="InstructionLabel" Content="Label" Grid.Column="1" Margin="10" Grid.Row="2"/>
 		<Label x:Name="IntrinsecusLabel" Content="Intrinsecus" Margin="10" Grid.Row="0" Grid.ColumnSpan="2" Grid.Column="0"
 		       FontSize="72"/>

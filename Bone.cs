@@ -6,8 +6,8 @@ namespace EhT.Intrinsecus
 {
     class Bone
     {
-        public CameraSpacePoint FirstJoint { get; private set; }
-        public CameraSpacePoint SecondJoint { get; private set; }
+        public Joint FirstJoint { get; private set; }
+        public Joint SecondJoint { get; private set; }
 
         public Tuple<JointType, JointType> Joints { get; private set; }
         public Bone(Tuple<JointType, JointType> joints)
@@ -18,16 +18,17 @@ namespace EhT.Intrinsecus
         public void Update(IReadOnlyDictionary<JointType, Joint> joints) {
             if (joints.ContainsKey(Joints.Item1))
             {
-                FirstJoint = joints[Joints.Item1].Position;
+	            FirstJoint = joints[Joints.Item1];
             }
             if (joints.ContainsKey(Joints.Item2))
             {
-                SecondJoint = joints[Joints.Item2].Position;
+	            SecondJoint = joints[Joints.Item2];
             }
         }
 
         public static Bone Skull = new Bone(new Tuple<JointType, JointType>(JointType.Head, JointType.Neck));
         public static Bone Cervical  = new Bone(new Tuple<JointType, JointType>(JointType.Neck, JointType.SpineShoulder));
+        public static Bone UpperBack  = new Bone(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.SpineMid));
         public static Bone LowerBack = new Bone(new Tuple<JointType, JointType>(JointType.SpineMid, JointType.SpineBase));
         public static Bone ShoulderBladeRight = new Bone(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderRight));
         public static Bone ShoulderBladeLeft = new Bone(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderLeft));
@@ -50,9 +51,9 @@ namespace EhT.Intrinsecus
         public static Bone CalfLeft = new Bone(new Tuple<JointType, JointType>(JointType.KneeLeft, JointType.AnkleLeft));
         public static Bone PedalLeft = new Bone(new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft)); 
 
-		public static Bone[] Bones = new Bone[]
+		public static Bone[] Bones =
 		{
-			Skull, Cervical, LowerBack, ShoulderBladeRight, ShoulderBladeLeft, PelvisRight,
+			Skull, Cervical, UpperBack, LowerBack, ShoulderBladeRight, ShoulderBladeLeft, PelvisRight,
 			PelvisLeft, UpperArmRight, LowerArmRight, PalmRight, FingerRight, OpposableRight, 
 			UpperArmLeft, LowerArmLeft, PalmLeft, FingerLeft, OpposableLeft, FemurRight, CalfRight, 
 			PedalRight, FemurLeft, CalfLeft, PedalLeft
