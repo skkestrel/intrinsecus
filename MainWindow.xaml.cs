@@ -1,26 +1,16 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="MainWindow.xaml.cs" company="Microsoft">
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Media;
+using Microsoft.Kinect;
 
-namespace Microsoft.Samples.Kinect.BodyBasics
+namespace EhT.Intrinsecus
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
-    using System.Windows;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using Microsoft.Kinect;
-
-    /// <summary>
+	/// <summary>
     /// Interaction logic for MainWindow
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : INotifyPropertyChanged
     {
         /// <summary>
         /// Radius of drawn hand circles
@@ -75,57 +65,57 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         /// <summary>
         /// Drawing group for body rendering output
         /// </summary>
-        private DrawingGroup drawingGroup;
+        private readonly DrawingGroup drawingGroup;
 
         /// <summary>
         /// Drawing image that we will display
         /// </summary>
-        private DrawingImage imageSource;
+        private readonly DrawingImage imageSource;
 
         /// <summary>
         /// Active Kinect sensor
         /// </summary>
-        private KinectSensor kinectSensor = null;
+        private KinectSensor kinectSensor;
 
-        /// <summary>
-        /// Coordinate mapper to map one type of point to another
-        /// </summary>
-        private CoordinateMapper coordinateMapper = null;
+		/// <summary>
+		/// Coordinate mapper to map one type of point to another
+		/// </summary>
+		private readonly CoordinateMapper coordinateMapper;
 
         /// <summary>
         /// Reader for body frames
         /// </summary>
-        private BodyFrameReader bodyFrameReader = null;
+        private BodyFrameReader bodyFrameReader;
 
         /// <summary>
         /// Array for the bodies
         /// </summary>
-        private Body[] bodies = null;
+        private Body[] bodies;
 
         /// <summary>
         /// definition of bones
         /// </summary>
-        private List<Tuple<JointType, JointType>> bones;
+        private readonly List<Tuple<JointType, JointType>> bones;
 
         /// <summary>
         /// Width of display (depth space)
         /// </summary>
-        private int displayWidth;
+        private readonly int displayWidth;
 
         /// <summary>
         /// Height of display (depth space)
         /// </summary>
-        private int displayHeight;
+        private readonly int displayHeight;
 
         /// <summary>
         /// List of colors for each body tracked
         /// </summary>
-        private List<Pen> bodyColors;
+        private readonly List<Pen> bodyColors;
 
         /// <summary>
         /// Current status text to display
         /// </summary>
-        private string statusText = null;
+        private string statusText;
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -133,89 +123,82 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         public MainWindow()
         {
             // one sensor is currently supported
-            this.kinectSensor = KinectSensor.GetDefault();
+            kinectSensor = KinectSensor.GetDefault();
 
             // get the coordinate mapper
-            this.coordinateMapper = this.kinectSensor.CoordinateMapper;
+            coordinateMapper = kinectSensor.CoordinateMapper;
 
             // get the depth (display) extents
-            FrameDescription frameDescription = this.kinectSensor.DepthFrameSource.FrameDescription;
+            FrameDescription frameDescription = kinectSensor.DepthFrameSource.FrameDescription;
 
             // get size of joint space
-            this.displayWidth = frameDescription.Width;
-            this.displayHeight = frameDescription.Height;
+            displayWidth = frameDescription.Width;
+            displayHeight = frameDescription.Height;
 
             // open the reader for the body frames
-            this.bodyFrameReader = this.kinectSensor.BodyFrameSource.OpenReader();
+            bodyFrameReader = kinectSensor.BodyFrameSource.OpenReader();
 
             // a bone defined as a line between two joints
-            this.bones = new List<Tuple<JointType, JointType>>();
+            bones = new List<Tuple<JointType, JointType>>
+            {
+	            new Tuple<JointType, JointType>(JointType.Head, JointType.Neck),
+	            new Tuple<JointType, JointType>(JointType.Neck, JointType.SpineShoulder),
+	            new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.SpineMid),
+	            new Tuple<JointType, JointType>(JointType.SpineMid, JointType.SpineBase),
+	            new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderRight),
+	            new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderLeft),
+	            new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipRight),
+	            new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipLeft),
+	            new Tuple<JointType, JointType>(JointType.ShoulderRight, JointType.ElbowRight),
+	            new Tuple<JointType, JointType>(JointType.ElbowRight, JointType.WristRight),
+	            new Tuple<JointType, JointType>(JointType.WristRight, JointType.HandRight),
+	            new Tuple<JointType, JointType>(JointType.HandRight, JointType.HandTipRight),
+	            new Tuple<JointType, JointType>(JointType.WristRight, JointType.ThumbRight),
+	            new Tuple<JointType, JointType>(JointType.ShoulderLeft, JointType.ElbowLeft),
+	            new Tuple<JointType, JointType>(JointType.ElbowLeft, JointType.WristLeft),
+	            new Tuple<JointType, JointType>(JointType.WristLeft, JointType.HandLeft),
+	            new Tuple<JointType, JointType>(JointType.HandLeft, JointType.HandTipLeft),
+	            new Tuple<JointType, JointType>(JointType.WristLeft, JointType.ThumbLeft),
+	            new Tuple<JointType, JointType>(JointType.HipRight, JointType.KneeRight),
+	            new Tuple<JointType, JointType>(JointType.KneeRight, JointType.AnkleRight),
+	            new Tuple<JointType, JointType>(JointType.AnkleRight, JointType.FootRight),
+	            new Tuple<JointType, JointType>(JointType.HipLeft, JointType.KneeLeft),
+	            new Tuple<JointType, JointType>(JointType.KneeLeft, JointType.AnkleLeft),
+	            new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft)
+            };
 
-            // Torso
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.Head, JointType.Neck));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.Neck, JointType.SpineShoulder));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.SpineMid));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.SpineMid, JointType.SpineBase));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderRight));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipRight));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipLeft));
+	        // populate body colors, one for each BodyIndex
+            bodyColors = new List<Pen>
+            {
+	            new Pen(Brushes.Red, 6),
+	            new Pen(Brushes.Orange, 6),
+	            new Pen(Brushes.Green, 6),
+	            new Pen(Brushes.Blue, 6),
+	            new Pen(Brushes.Indigo, 6),
+	            new Pen(Brushes.Violet, 6)
+            };
 
-            // Right Arm
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.ShoulderRight, JointType.ElbowRight));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.ElbowRight, JointType.WristRight));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.WristRight, JointType.HandRight));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.HandRight, JointType.HandTipRight));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.WristRight, JointType.ThumbRight));
-
-            // Left Arm
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.ShoulderLeft, JointType.ElbowLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.ElbowLeft, JointType.WristLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.HandLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.HandLeft, JointType.HandTipLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.ThumbLeft));
-
-            // Right Leg
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.HipRight, JointType.KneeRight));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.KneeRight, JointType.AnkleRight));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.AnkleRight, JointType.FootRight));
-
-            // Left Leg
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.HipLeft, JointType.KneeLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.KneeLeft, JointType.AnkleLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft));
-
-            // populate body colors, one for each BodyIndex
-            this.bodyColors = new List<Pen>();
-
-            this.bodyColors.Add(new Pen(Brushes.Red, 6));
-            this.bodyColors.Add(new Pen(Brushes.Orange, 6));
-            this.bodyColors.Add(new Pen(Brushes.Green, 6));
-            this.bodyColors.Add(new Pen(Brushes.Blue, 6));
-            this.bodyColors.Add(new Pen(Brushes.Indigo, 6));
-            this.bodyColors.Add(new Pen(Brushes.Violet, 6));
-
-            // set IsAvailableChanged event notifier
-            this.kinectSensor.IsAvailableChanged += this.Sensor_IsAvailableChanged;
+	        // set IsAvailableChanged event notifier
+            kinectSensor.IsAvailableChanged += Sensor_IsAvailableChanged;
 
             // open the sensor
-            this.kinectSensor.Open();
+            kinectSensor.Open();
 
             // set the status text
-            this.StatusText = this.kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
+            StatusText = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
                                                             : Properties.Resources.NoSensorStatusText;
 
             // Create the drawing group we'll use for drawing
-            this.drawingGroup = new DrawingGroup();
+            drawingGroup = new DrawingGroup();
 
             // Create an image source that we can use in our image control
-            this.imageSource = new DrawingImage(this.drawingGroup);
+            imageSource = new DrawingImage(drawingGroup);
 
             // use the window object as the view model in this simple example
-            this.DataContext = this;
+            DataContext = this;
 
             // initialize the components (controls) of the window
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         /// <summary>
@@ -230,7 +213,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         {
             get
             {
-                return this.imageSource;
+                return imageSource;
             }
         }
 
@@ -241,19 +224,19 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         {
             get
             {
-                return this.statusText;
+                return statusText;
             }
 
             set
             {
-                if (this.statusText != value)
+                if (statusText != value)
                 {
-                    this.statusText = value;
+                    statusText = value;
 
                     // notify any bound elements that the text has changed
-                    if (this.PropertyChanged != null)
+                    if (PropertyChanged != null)
                     {
-                        this.PropertyChanged(this, new PropertyChangedEventArgs("StatusText"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("StatusText"));
                     }
                 }
             }
@@ -266,9 +249,9 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         /// <param name="e">event arguments</param>
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            if (this.bodyFrameReader != null)
+            if (bodyFrameReader != null)
             {
-                this.bodyFrameReader.FrameArrived += this.Reader_FrameArrived;
+                bodyFrameReader.FrameArrived += Reader_FrameArrived;
             }
         }
 
@@ -279,17 +262,17 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         /// <param name="e">event arguments</param>
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
-            if (this.bodyFrameReader != null)
+            if (bodyFrameReader != null)
             {
                 // BodyFrameReader is IDisposable
-                this.bodyFrameReader.Dispose();
-                this.bodyFrameReader = null;
+                bodyFrameReader.Dispose();
+                bodyFrameReader = null;
             }
 
-            if (this.kinectSensor != null)
+            if (kinectSensor != null)
             {
-                this.kinectSensor.Close();
-                this.kinectSensor = null;
+                kinectSensor.Close();
+                kinectSensor = null;
             }
         }
 
@@ -306,34 +289,34 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             {
                 if (bodyFrame != null)
                 {
-                    if (this.bodies == null)
+                    if (bodies == null)
                     {
-                        this.bodies = new Body[bodyFrame.BodyCount];
+                        bodies = new Body[bodyFrame.BodyCount];
                     }
 
                     // The first time GetAndRefreshBodyData is called, Kinect will allocate each Body in the array.
                     // As long as those body objects are not disposed and not set to null in the array,
                     // those body objects will be re-used.
-                    bodyFrame.GetAndRefreshBodyData(this.bodies);
+                    bodyFrame.GetAndRefreshBodyData(bodies);
                     dataReceived = true;
                 }
             }
 
             if (dataReceived)
             {
-                using (DrawingContext dc = this.drawingGroup.Open())
+                using (DrawingContext dc = drawingGroup.Open())
                 {
                     // Draw a transparent background to set the render size
-                    dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+                    dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
 
                     int penIndex = 0;
-                    foreach (Body body in this.bodies)
+                    foreach (Body body in bodies)
                     {
-                        Pen drawPen = this.bodyColors[penIndex++];
+                        Pen drawPen = bodyColors[penIndex++];
 
                         if (body.IsTracked)
                         {
-                            this.DrawClippedEdges(body, dc);
+                            DrawClippedEdges(body, dc);
 
                             IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
 
@@ -350,19 +333,19 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                                     position.Z = InferredZPositionClamp;
                                 }
 
-                                DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(position);
+                                DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
                                 jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
                             }
 
-                            this.DrawBody(joints, jointPoints, dc, drawPen);
+                            DrawBody(joints, jointPoints, dc, drawPen);
 
-                            this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
-                            this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+                            DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
+                            DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
                         }
                     }
 
                     // prevent drawing outside of our render area
-                    this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+                    drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
                 }
             }
         }
@@ -377,9 +360,9 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         private void DrawBody(IReadOnlyDictionary<JointType, Joint> joints, IDictionary<JointType, Point> jointPoints, DrawingContext drawingContext, Pen drawingPen)
         {
             // Draw the bones
-            foreach (var bone in this.bones)
+            foreach (var bone in bones)
             {
-                this.DrawBone(joints, jointPoints, bone.Item1, bone.Item2, drawingContext, drawingPen);
+                DrawBone(joints, jointPoints, bone.Item1, bone.Item2, drawingContext, drawingPen);
             }
 
             // Draw the joints
@@ -391,11 +374,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                 if (trackingState == TrackingState.Tracked)
                 {
-                    drawBrush = this.trackedJointBrush;
+                    drawBrush = trackedJointBrush;
                 }
                 else if (trackingState == TrackingState.Inferred)
                 {
-                    drawBrush = this.inferredJointBrush;
+                    drawBrush = inferredJointBrush;
                 }
 
                 if (drawBrush != null)
@@ -427,7 +410,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
 
             // We assume all drawn bones are inferred unless BOTH joints are tracked
-            Pen drawPen = this.inferredBonePen;
+            Pen drawPen = inferredBonePen;
             if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
             {
                 drawPen = drawingPen;
@@ -447,15 +430,15 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             switch (handState)
             {
                 case HandState.Closed:
-                    drawingContext.DrawEllipse(this.handClosedBrush, null, handPosition, HandSize, HandSize);
+                    drawingContext.DrawEllipse(handClosedBrush, null, handPosition, HandSize, HandSize);
                     break;
 
                 case HandState.Open:
-                    drawingContext.DrawEllipse(this.handOpenBrush, null, handPosition, HandSize, HandSize);
+                    drawingContext.DrawEllipse(handOpenBrush, null, handPosition, HandSize, HandSize);
                     break;
 
                 case HandState.Lasso:
-                    drawingContext.DrawEllipse(this.handLassoBrush, null, handPosition, HandSize, HandSize);
+                    drawingContext.DrawEllipse(handLassoBrush, null, handPosition, HandSize, HandSize);
                     break;
             }
         }
@@ -474,7 +457,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 drawingContext.DrawRectangle(
                     Brushes.Red,
                     null,
-                    new Rect(0, this.displayHeight - ClipBoundsThickness, this.displayWidth, ClipBoundsThickness));
+                    new Rect(0, displayHeight - ClipBoundsThickness, displayWidth, ClipBoundsThickness));
             }
 
             if (clippedEdges.HasFlag(FrameEdges.Top))
@@ -482,7 +465,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 drawingContext.DrawRectangle(
                     Brushes.Red,
                     null,
-                    new Rect(0, 0, this.displayWidth, ClipBoundsThickness));
+                    new Rect(0, 0, displayWidth, ClipBoundsThickness));
             }
 
             if (clippedEdges.HasFlag(FrameEdges.Left))
@@ -490,7 +473,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 drawingContext.DrawRectangle(
                     Brushes.Red,
                     null,
-                    new Rect(0, 0, ClipBoundsThickness, this.displayHeight));
+                    new Rect(0, 0, ClipBoundsThickness, displayHeight));
             }
 
             if (clippedEdges.HasFlag(FrameEdges.Right))
@@ -498,7 +481,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 drawingContext.DrawRectangle(
                     Brushes.Red,
                     null,
-                    new Rect(this.displayWidth - ClipBoundsThickness, 0, ClipBoundsThickness, this.displayHeight));
+                    new Rect(displayWidth - ClipBoundsThickness, 0, ClipBoundsThickness, displayHeight));
             }
         }
 
@@ -510,7 +493,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         private void Sensor_IsAvailableChanged(object sender, IsAvailableChangedEventArgs e)
         {
             // on failure, set the status text
-            this.StatusText = this.kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
+            StatusText = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
                                                             : Properties.Resources.SensorNotAvailableStatusText;
         }
     }
