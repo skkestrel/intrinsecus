@@ -28,7 +28,7 @@ namespace EhT.Intrinsecus
         static Bone PelvisRight = new Bone(new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipRight));
         static Bone PelvisLeft = new Bone(new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipLeft));
         static Bone UpperArmRight = new Bone(new Tuple<JointType, JointType>(JointType.ShoulderRight, JointType.ElbowRight));
-        static Bone LowerArmLeft = new Bone(new Tuple<JointType, JointType>(JointType.ElbowRight, JointType.WristRight));
+        static Bone LowerArmRight = new Bone(new Tuple<JointType, JointType>(JointType.ElbowRight, JointType.WristRight));
         static Bone PalmRight = new Bone(new Tuple<JointType, JointType>(JointType.WristRight, JointType.HandRight));
         static Bone FingerRight = new Bone(new Tuple<JointType, JointType>(JointType.HandRight, JointType.HandTipRight));
         static Bone OpposableRight = new Bone(new Tuple<JointType, JointType>(JointType.WristRight, JointType.ThumbRight));
@@ -42,7 +42,7 @@ namespace EhT.Intrinsecus
         static Bone PedalRight = new Bone(new Tuple<JointType, JointType>(JointType.AnkleRight, JointType.FootRight));
         static Bone FemurLeft = new Bone(new Tuple<JointType, JointType>(JointType.HipLeft, JointType.KneeLeft));
         static Bone CalfLeft = new Bone(new Tuple<JointType, JointType>(JointType.KneeLeft, JointType.AnkleLeft));
-        static Bone PedalLeft = new Bone(new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft); 
+        static Bone PedalLeft = new Bone(new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft)); 
     }
 
      
