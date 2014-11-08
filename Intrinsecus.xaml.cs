@@ -8,9 +8,9 @@ using Microsoft.Kinect;
 namespace EhT.Intrinsecus
 {
 	/// <summary>
-    /// Interaction logic for Intrinsecus
+    /// Interaction logic for MainWindow
     /// </summary>
-    public partial class Intrinsecus : INotifyPropertyChanged
+    public partial class MainWindow : INotifyPropertyChanged
     {
         /// <summary>
         /// Radius of drawn hand circles
@@ -118,9 +118,9 @@ namespace EhT.Intrinsecus
         private string statusText;
 
         /// <summary>
-        /// Initializes a new instance of the Intrinsecus class.
+        /// Initializes a new instance of the MainWindow class.
         /// </summary>
-        public Intrinsecus()
+        public MainWindow()
         {
             // one sensor is currently supported
             kinectSensor = KinectSensor.GetDefault();
@@ -246,7 +246,7 @@ namespace EhT.Intrinsecus
         /// </summary>
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
-        private void Intrinsecus_Loaded(object sender, RoutedEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (bodyFrameReader != null)
             {
@@ -259,7 +259,7 @@ namespace EhT.Intrinsecus
         /// </summary>
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
-        private void Intrinsecus_Closing(object sender, CancelEventArgs e)
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             if (bodyFrameReader != null)
             {
