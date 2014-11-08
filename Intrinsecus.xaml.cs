@@ -229,16 +229,15 @@ namespace EhT.Intrinsecus
 
             set
             {
-                if (statusText != value)
-                {
-                    statusText = value;
+	            if (statusText == value) return;
 
-                    // notify any bound elements that the text has changed
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged(this, new PropertyChangedEventArgs("StatusText"));
-                    }
-                }
+	            statusText = value;
+
+	            // notify any bound elements that the text has changed
+	            if (PropertyChanged != null)
+	            {
+		            PropertyChanged(this, new PropertyChangedEventArgs("StatusText"));
+	            }
             }
         }
 
@@ -302,52 +301,51 @@ namespace EhT.Intrinsecus
                 }
             }
 
-            if (dataReceived)
-            {
-                using (DrawingContext dc = drawingGroup.Open())
-                {
-                    // Draw a transparent background to set the render size
-                    dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
+	        if (!dataReceived) return;
 
-                    int penIndex = 0;
-                    foreach (Body body in bodies)
-                    {
-                        Pen drawPen = bodyColors[penIndex++];
+	        using (DrawingContext dc = drawingGroup.Open())
+	        {
+		        // Draw a transparent background to set the render size
+		        dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
 
-                        if (body.IsTracked)
-                        {
-                            DrawClippedEdges(body, dc);
+		        int penIndex = 0;
+		        foreach (Body body in bodies)
+		        {
+			        Pen drawPen = bodyColors[penIndex++];
 
-                            IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
+			        if (body.IsTracked)
+			        {
+				        DrawClippedEdges(body, dc);
 
-                            // convert the joint points to depth (display) space
-                            Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
+				        IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
 
-                            foreach (JointType jointType in joints.Keys)
-                            {
-                                // sometimes the depth(Z) of an inferred joint may show as negative
-                                // clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
-                                CameraSpacePoint position = joints[jointType].Position;
-                                if (position.Z < 0)
-                                {
-                                    position.Z = InferredZPositionClamp;
-                                }
+				        // convert the joint points to depth (display) space
+				        Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
 
-                                DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
-                                jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
-                            }
+				        foreach (JointType jointType in joints.Keys)
+				        {
+					        // sometimes the depth(Z) of an inferred joint may show as negative
+					        // clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
+					        CameraSpacePoint position = joints[jointType].Position;
+					        if (position.Z < 0)
+					        {
+						        position.Z = InferredZPositionClamp;
+					        }
 
-                            DrawBody(joints, jointPoints, dc, drawPen);
+					        DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
+					        jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+				        }
 
-                            DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
-                            DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
-                        }
-                    }
+				        DrawBody(joints, jointPoints, dc, drawPen);
 
-                    // prevent drawing outside of our render area
-                    drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
-                }
-            }
+				        DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
+				        DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+			        }
+		        }
+
+		        // prevent drawing outside of our render area
+		        drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
+	        }
         }
 
         /// <summary>
