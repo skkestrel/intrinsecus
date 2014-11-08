@@ -19,31 +19,30 @@ namespace EhT.Intrinsecus
         {
             Joints = joints;
         }
-/*
-    static Bone Skull = new Bone(new Tuple<JointType, JointType>(JointType.Head, JointType.Neck));
-    static Bone Cervical  = new Bone(new Tuple<JointType, JointType>(JointType.Neck, JointType.SpineShoulder));
-    static Bone ShoulderBladeLight
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.SpineMid, JointType.SpineBase));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderLeft));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipLeft));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.ShoulderRight, JointType.ElbowRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.ElbowRight, JointType.WristRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.WristRight, JointType.HandRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.HandRight, JointType.HandTipRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.WristRight, JointType.ThumbRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.ShoulderLeft, JointType.ElbowLeft));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.ElbowLeft, JointType.WristLeft));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.HandLeft));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.HandLeft, JointType.HandTipLeft));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.ThumbLeft));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.HipRight, JointType.KneeRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.KneeRight, JointType.AnkleRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.AnkleRight, JointType.FootRight));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.HipLeft, JointType.KneeLeft));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.KneeLeft, JointType.AnkleLeft));
-static Bone  = new Bone(new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft); */
+
+        static Bone Skull = new Bone(new Tuple<JointType, JointType>(JointType.Head, JointType.Neck));
+        static Bone Cervical  = new Bone(new Tuple<JointType, JointType>(JointType.Neck, JointType.SpineShoulder));
+        static Bone LowerBack = new Bone(new Tuple<JointType, JointType>(JointType.SpineMid, JointType.SpineBase));
+        static Bone ShoulderBladeRight = new Bone(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderRight));
+        static Bone ShoulderBladeLeft = new Bone(new Tuple<JointType, JointType>(JointType.SpineShoulder, JointType.ShoulderLeft));
+        static Bone PelvisRight = new Bone(new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipRight));
+        static Bone PelvisLeft = new Bone(new Tuple<JointType, JointType>(JointType.SpineBase, JointType.HipLeft));
+        static Bone UpperArmRight = new Bone(new Tuple<JointType, JointType>(JointType.ShoulderRight, JointType.ElbowRight));
+        static Bone LowerArmLeft = new Bone(new Tuple<JointType, JointType>(JointType.ElbowRight, JointType.WristRight));
+        static Bone PalmRight = new Bone(new Tuple<JointType, JointType>(JointType.WristRight, JointType.HandRight));
+        static Bone FingerRight = new Bone(new Tuple<JointType, JointType>(JointType.HandRight, JointType.HandTipRight));
+        static Bone OpposableRight = new Bone(new Tuple<JointType, JointType>(JointType.WristRight, JointType.ThumbRight));
+        static Bone UpperArmLeft = new Bone(new Tuple<JointType, JointType>(JointType.ShoulderLeft, JointType.ElbowLeft));
+        static Bone LowerArmLeft= new Bone(new Tuple<JointType, JointType>(JointType.ElbowLeft, JointType.WristLeft));
+        static Bone PalmLeft = new Bone(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.HandLeft));
+        static Bone FingerLeft = new Bone(new Tuple<JointType, JointType>(JointType.HandLeft, JointType.HandTipLeft));
+        static Bone OpposableLeft = new Bone(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.ThumbLeft));
+        static Bone FemurRight = new Bone(new Tuple<JointType, JointType>(JointType.HipRight, JointType.KneeRight));
+        static Bone CalfRight = new Bone(new Tuple<JointType, JointType>(JointType.KneeRight, JointType.AnkleRight));
+        static Bone PedalRight = new Bone(new Tuple<JointType, JointType>(JointType.AnkleRight, JointType.FootRight));
+        static Bone FemurLeft = new Bone(new Tuple<JointType, JointType>(JointType.HipLeft, JointType.KneeLeft));
+        static Bone CalfLeft = new Bone(new Tuple<JointType, JointType>(JointType.KneeLeft, JointType.AnkleLeft));
+        static Bone PedalLeft = new Bone(new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft); 
     }
 
      
