@@ -12,6 +12,12 @@ namespace EhT.Intrinsecus
     /// </summary>
     public partial class MainWindow : INotifyPropertyChanged
     {
+
+        enum BoneNames { Neck, ShoulderBladeLeft, ShoulderBladeRight, UpperArmLeft, UpperArmRight, ForeArmLeft, 
+            ForeArmRight, PalmLeft, PalmRight, FingerLeft, FingerRight, ThumbLeft, ThumbRight, PelvisLeft, PelvisRight,
+        FemurLeft, FemurRight, CalfLeft, CalfRight, PedalLeft, PedalRight }
+        
+       	         
         /// <summary>
         /// Radius of drawn hand circles
         /// </summary>
@@ -166,6 +172,7 @@ namespace EhT.Intrinsecus
 	            new Tuple<JointType, JointType>(JointType.KneeLeft, JointType.AnkleLeft),
 	            new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft)
             };
+
 
 	        // populate body colors, one for each BodyIndex
             bodyColors = new List<Pen>
