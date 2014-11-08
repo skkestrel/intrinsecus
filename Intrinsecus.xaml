@@ -4,7 +4,7 @@
         Title="Body Basics" 
         Height="768" Width="1024" 
         Loaded="MainWindow_Loaded"
-        Closing="MainWindow_Closing" WindowStartupLocation="CenterScreen">
+        Closing="MainWindow_Closing" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
 	<Window.Resources>
 		<SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e" />
 		<SolidColorBrush x:Key="KinectPurpleBrush" Color="#ff52318f" />
