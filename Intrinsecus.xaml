@@ -29,6 +29,6 @@
 		<Label x:Name="InstructionLabel" Content="Label" Grid.Column="1" Margin="10" Grid.Row="2"/>
 		<Label x:Name="RepLabel" Content="Label" Grid.Column="1" Margin="10" Grid.Row="3"/>
 		<Label x:Name="IntrinsecusLabel" Content="Intrinsecus" Margin="10" Grid.ColumnSpan="2" FontSize="72"/>
-        <Button x:Name="SelectionDialogueButton" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Column="1" Margin="193,0,0,0" Click="Click"/>
+        <Button x:Name="SelectionDialogueButton" Content="Selection" Grid.Column="1" Margin="10" Click="SelectionDialogueButton_Click" FontSize="48"/>
     </Grid>
 </Window>

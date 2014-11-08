@@ -495,9 +495,9 @@ namespace EhT.Intrinsecus
                                                             : Properties.Resources.SensorNotAvailableStatusText;
         }
 
-        private void Click(object sender, RoutedEventArgs e)
+        private void SelectionDialogueButton_Click(object sender, RoutedEventArgs e)
         {
-            new Window1().Show();
+            new SelectionDialogueWindow().Show();
         }
     }
 }

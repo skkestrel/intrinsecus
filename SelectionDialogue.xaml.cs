@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace EhT.Intrinsecus
 {
     /// <summary>
-    /// Interaction logic for Window1.xaml
+    /// Interaction logic for SelectionDialogueWindow.xaml
     /// </summary>
-    public partial class Window1 : Window
+    public partial class SelectionDialogueWindow
     {
-        public Window1()
+        public SelectionDialogueWindow()
         {
             InitializeComponent();
         }

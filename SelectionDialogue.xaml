@@ -1,7 +1,7 @@
-﻿<Window x:Class="EhT.Intrinsecus.Window1"
+﻿<Window x:Class="EhT.Intrinsecus.SelectionDialogueWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Window1" Height="300" Width="150">
+        Title="SelectionDialogueWindow" Height="300" Width="150">
     <Grid>
         <Button Content="Squats" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,56,0,0" Click="Button_Click"/>
         <Button Content="Deadlifts" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,81,0,0" Click="Button_Click"/>
