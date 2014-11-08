@@ -313,34 +313,33 @@ namespace EhT.Intrinsecus
 		        {
 			        Pen drawPen = bodyColors[penIndex++];
 
-			        if (body.IsTracked)
+			        if (!body.IsTracked) continue;
+
+			        DrawClippedEdges(body, dc);
+
+			        IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
+
+			        // convert the joint points to depth (display) space
+			        Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
+
+			        foreach (JointType jointType in joints.Keys)
 			        {
-				        DrawClippedEdges(body, dc);
-
-				        IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
-
-				        // convert the joint points to depth (display) space
-				        Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
-
-				        foreach (JointType jointType in joints.Keys)
+				        // sometimes the depth(Z) of an inferred joint may show as negative
+				        // clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
+				        CameraSpacePoint position = joints[jointType].Position;
+				        if (position.Z < 0)
 				        {
-					        // sometimes the depth(Z) of an inferred joint may show as negative
-					        // clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
-					        CameraSpacePoint position = joints[jointType].Position;
-					        if (position.Z < 0)
-					        {
-						        position.Z = InferredZPositionClamp;
-					        }
-
-					        DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
-					        jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+					        position.Z = InferredZPositionClamp;
 				        }
 
-				        DrawBody(joints, jointPoints, dc, drawPen);
-
-				        DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
-				        DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+				        DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
+				        jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
 			        }
+
+			        DrawBody(joints, jointPoints, dc, drawPen);
+
+			        DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
+			        DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
 		        }
 
 		        // prevent drawing outside of our render area
@@ -370,13 +369,14 @@ namespace EhT.Intrinsecus
 
                 TrackingState trackingState = joints[jointType].TrackingState;
 
-                if (trackingState == TrackingState.Tracked)
+                switch (trackingState)
                 {
-                    drawBrush = trackedJointBrush;
-                }
-                else if (trackingState == TrackingState.Inferred)
-                {
-                    drawBrush = inferredJointBrush;
+	                case TrackingState.Tracked:
+		                drawBrush = trackedJointBrush;
+		                break;
+	                case TrackingState.Inferred:
+		                drawBrush = inferredJointBrush;
+		                break;
                 }
 
                 if (drawBrush != null)
