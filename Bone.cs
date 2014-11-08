@@ -9,10 +9,8 @@ namespace EhT.Intrinsecus
 {
     class Bone
     {
-        public float X { get; private set; }
-        public float Y { get; private set; }
-        public float Z { get; private set; }
-
+        public CameraSpacePoint FirstJoint { get; private set; }
+        public CameraSpacePoint SecondJoint { get; private set; }
 
         public Tuple<JointType, JointType> Joints { get; private set; }
         public Bone(Tuple<JointType, JointType> joints)
@@ -20,10 +18,15 @@ namespace EhT.Intrinsecus
             Joints = joints;
         }
 
-        public void update(float X, float Y, float Z) {
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
+        public void Update(IReadOnlyDictionary<JointType, Joint> joints) {
+            if (joints.ContainsKey(Joints.Item1))
+            {
+                FirstJoint = joints[Joints.Item1].Position;
+            }
+            if (joints.ContainsKey(Joints.Item2))
+            {
+                SecondJoint = joints[Joints.Item2].Position;
+            }
         }
 
         static Bone Skull = new Bone(new Tuple<JointType, JointType>(JointType.Head, JointType.Neck));
