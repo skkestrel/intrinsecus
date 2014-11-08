@@ -20,6 +20,12 @@ namespace EhT.Intrinsecus
             Joints = joints;
         }
 
+        public void update(float X, float Y, float Z) {
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
+        }
+
         static Bone Skull = new Bone(new Tuple<JointType, JointType>(JointType.Head, JointType.Neck));
         static Bone Cervical  = new Bone(new Tuple<JointType, JointType>(JointType.Neck, JointType.SpineShoulder));
         static Bone LowerBack = new Bone(new Tuple<JointType, JointType>(JointType.SpineMid, JointType.SpineBase));
