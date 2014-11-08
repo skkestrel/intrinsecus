@@ -494,5 +494,13 @@ namespace EhT.Intrinsecus
             StatusText = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
                                                             : Properties.Resources.SensorNotAvailableStatusText;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+     
+
+            
+        }
     }
 }
