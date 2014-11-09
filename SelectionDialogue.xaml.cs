@@ -103,6 +103,9 @@ namespace EhT.Intrinsecus
                 case AudioCommand.SHOULDERPRESS:
                     StartShoulderPresses();
                     break;
+                case AudioCommand.JUMPINGJACK:
+                    StartJumpingJacks();
+                    break;
                 case AudioCommand.SELECT:
                     break;
             }

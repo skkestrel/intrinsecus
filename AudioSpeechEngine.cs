@@ -18,7 +18,8 @@ namespace EhT.Intrinsecus
         DEADLIFT,
         LUNGES,
         SHOULDERPRESS,
-        SELECT
+        SELECT,
+        JUMPINGJACK
     }
 
     public class AudioSpeechEngine
@@ -160,6 +161,10 @@ namespace EhT.Intrinsecus
                     case "SELECT":
                         args.command = AudioCommand.SELECT;
                         break;
+                    case "JUMPINGJACK":
+                        args.command = AudioCommand.JUMPINGJACK;
+                        break;
+
                 }
 
                 handler(this, args);
