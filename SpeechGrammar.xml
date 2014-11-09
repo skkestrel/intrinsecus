@@ -15,6 +15,7 @@
           <item> backward </item>
           <item> backwards </item>
           <item> back </item>
+          <item> out </item>
           <item> previous </item>
         </one-of>
       </item>
