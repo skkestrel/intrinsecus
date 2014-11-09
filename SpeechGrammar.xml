@@ -44,6 +44,14 @@
           <item> leg lunges </item>
         </one-of>
       </item>
+      <item>
+        <tag>SELECT</tag>
+        <one-of>
+          <item> select </item>
+          <item> ok </item>
+          <item> selects </item>
+        </one-of>
+      </item>
     </one-of>
   </rule>
 </grammar>

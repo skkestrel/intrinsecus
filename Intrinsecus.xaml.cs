@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Speech.Synthesis;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Media; 
 using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
@@ -71,6 +72,8 @@ namespace EhT.Intrinsecus
         /// </summary>
         private readonly List<Pen> bodyColors;
 
+        private SpeechSynthesizer synth;
+
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
@@ -123,6 +126,9 @@ namespace EhT.Intrinsecus
 
             // use the window object as the view model in this simple example
             DataContext = this;
+
+            synth = new SpeechSynthesizer();
+            synth.SetOutputToDefaultAudioDevice();
 
             // initialize the components (controls) of the window
             InitializeComponent();
@@ -251,15 +257,21 @@ namespace EhT.Intrinsecus
                     break;
                 case AudioCommand.SQUAT:
                     ExerciseLabel.Content = "Squat";
+                    synth.SpeakAsync("Starting a set of squats");
                     break;
                 case AudioCommand.DEADLIFT:
                     ExerciseLabel.Content = "Deadlift";
+                    synth.SpeakAsync("Starting a set of dead lifts");
                     break;
                 case AudioCommand.LUNGES:
                     ExerciseLabel.Content = "Lunges";
+                    synth.SpeakAsync("Starting a set of lunges");
                     break;
                 case AudioCommand.SHOULDERPRESS:
                     ExerciseLabel.Content = "Shoulder Press";
+                    synth.SpeakAsync("Starting a set of shoulder presses");
+                    break;
+                case AudioCommand.SELECT:
                     break;
             }
         }
