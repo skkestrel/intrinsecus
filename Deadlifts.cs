@@ -7,6 +7,12 @@ namespace EhT.Intrinsecus
     class Deadlifts : IExercise
     {
         Transition state;
+        CameraSpacePoint Neck;
+        CameraSpacePoint SpineShoulder;
+        CameraSpacePoint SpineMid;
+        CameraSpacePoint SpineBase;
+        CameraSpacePoint Knee;
+        CameraSpacePoint Ankle;
         enum Transition
         {
             UPTODOWN,
@@ -24,13 +30,11 @@ namespace EhT.Intrinsecus
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
-            CameraSpacePoint Neck = body.Joints[JointType.Neck].Position;
-			CameraSpacePoint SpineShoulder = body.Joints[JointType.SpineShoulder].Position;
-            CameraSpacePoint SpineMid = body.Joints[JointType.SpineMid].Position;
-            CameraSpacePoint SpineBase = body.Joints[JointType.SpineBase].Position;
-            CameraSpacePoint Knee;
-            CameraSpacePoint Ankle;
-
+            Neck = body.Joints[JointType.Neck].Position;
+			SpineShoulder = body.Joints[JointType.SpineShoulder].Position;
+            SpineMid = body.Joints[JointType.SpineMid].Position;
+            SpineBase = body.Joints[JointType.SpineBase].Position;
+            
             float HipPoint = body.Joints[JointType.HipLeft].Position.Y;
 			float KneePoint = body.Joints[JointType.KneeLeft].Position.Y;
 
@@ -53,18 +57,17 @@ namespace EhT.Intrinsecus
 
             //logic up
             //check z (depth)
-            if (System.Math.Abs(SpineShoulder.Z - SpineBase.Z) < 0.10)
-            {
-                if ((System.Math.Abs(Neck.X - SpineShoulder.X) < .10) && (System.Math.Abs(SpineShoulder.X - SpineMid.X) < .10) && (System.Math.Abs(SpineMid.X - SpineBase.X) < .10))
-                {
-                    
-                    if (state == Transition.DOWNTOUP)
+            if (state == Transition.DOWNTOUP)
+            { 
+                if (System.Math.Abs(SpineShoulder.Z - SpineBase.Z) < 0.10)
                     {
-                        repcount++;
-                        repComplete = true;
-                        intrinsecus.InstructionLabel.Content = "Back Straight, Great Rep. Good Form. Way to Go.";
-                        state = Transition.UPTODOWN;
-                    }
+                        if (TorsoStraight())
+                        {
+                            repcount++;
+                            repComplete = true;
+                            intrinsecus.InstructionLabel.Content = "Back Straight, Great Rep. Good Form. Way to Go.";
+                            state = Transition.UPTODOWN;
+                        }
                 }
 
                 else intrinsecus.InstructionLabel.Content = "Bro, back ain't straight. You ain't gonna get no gains with that form.";
@@ -72,20 +75,23 @@ namespace EhT.Intrinsecus
               //logic down
             else
             {
-                if (HipKnee < 0.05)
-			    {
-                    if (state == Transition.UPTODOWN)
+                if (state == Transition.UPTODOWN)
+                {
+                    if (HipKnee < 0.10)
+			        {
+                        if (TorsoStraight()) { 
+                            intrinsecus.InstructionLabel.Content = "Bro, your low. Good job. Tight. Nice Form.";
+                            repComplete = false;
+                            state = Transition.DOWNTOUP;
+                        }
+                    }
+                    else
                     {
-                        intrinsecus.InstructionLabel.Content = "Bro, your low. Good job. Tight. Nice Form.";
-                        repComplete = false;
-                        state = Transition.DOWNTOUP;
+                        intrinsecus.InstructionLabel.Content = "Bro. Need to get lower. No pain, no gain.";
                     }
 	//	repflashtick = 0;
 			    }
-                else
-                {
-                    intrinsecus.InstructionLabel.Content = "Bro. Need to get lower. No pain, no gain.";
-                }
+                
 
             }
 
@@ -108,7 +114,8 @@ namespace EhT.Intrinsecus
 
         private bool TorsoStraight()
         {
-            return true;
+            if ((MathUtil.CosineLaw(Neck, SpineShoulder, SpineMid) > 170) && (MathUtil.CosineLaw(SpineShoulder, SpineMid, SpineBase) > 170)) return true;
+            else return false;
         }
 
         public string GetName()
