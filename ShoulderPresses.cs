@@ -73,7 +73,7 @@ namespace EhT.Intrinsecus
                 if (state == Transition.UpToDown)
                 {
                     reps++;
-                    speechFlag = false;
+                    speechFlag = true;
                     intrinsecus.InstructionLabel.Content = "Great shoulder press, keep going!";
                     state = Transition.DownToUp;
                 }
