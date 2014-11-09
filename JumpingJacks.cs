@@ -10,6 +10,7 @@ namespace EhT.Intrinsecus
         private double prevGroin;
         private int targetReps;
         private Intrinsecus parent;
+        private bool speechFlag;
 
         public JumpingJacks(int tarReps, Intrinsecus parent)
         {
@@ -17,6 +18,7 @@ namespace EhT.Intrinsecus
             parent.InstructionLabel.Content = "None";
             parent.ExerciseLabel.Content = GetName();
             this.parent = parent;
+            this.speechFlag = true;
 
             reps = 0;
             state = Transition.DOWNTOUP;
@@ -45,11 +47,23 @@ namespace EhT.Intrinsecus
             double aLeft = MathUtil.CosineLaw(body.Joints[JointType.ElbowLeft].Position, body.Joints[JointType.HipLeft].Position, body.Joints[JointType.ShoulderLeft].Position);
             double groin = MathUtil.CosineLaw(body.Joints[JointType.FootLeft].Position, body.Joints[JointType.FootRight].Position, body.Joints[JointType.SpineBase].Position);
 
+
+            if (speechFlag == true)
+            {
+                if (reps == 5) intrinsecus.synth.SpeakAsync("Only five left, you can do it!");
+                if (reps == 7) intrinsecus.synth.SpeakAsync("Three left, almost there!");
+                if (reps == 9) intrinsecus.synth.SpeakAsync("One left...");
+                if (reps == 10) intrinsecus.synth.SpeakAsync("You did your squats! Congratulations!");
+                speechFlag = false;
+            }
+
             if ((groin < 20) && (aRight < 30) && (aLeft < 30))
             {
                 if (state == Transition.UPTODOWN)
                 {
                     reps++;
+                    speechFlag = true;
+
                     intrinsecus.InstructionLabel.Content = "Great Jumping Jack, Bro!";
                     state = Transition.DOWNTOUP;
                 }
