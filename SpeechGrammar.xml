@@ -1,0 +1,49 @@
+﻿<grammar version="1.0" xml:lang="en-US" root="rootRule" tag-format="semantics/1.0-literals" xmlns="http://www.w3.org/2001/06/grammar">
+  <rule id="rootRule">
+    <one-of>
+      <item>
+        <tag>ENTER</tag>
+        <one-of>
+          <item> enter </item>
+          <item> enters </item>
+          <item> select </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>BACK</tag>
+        <one-of>
+          <item> backward </item>
+          <item> backwards </item>
+          <item> back </item>
+          <item> out </item>
+          <item> previous </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>SQUAT</tag>
+        <one-of>
+          <item> squats </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>DEADLIFT</tag>
+        <one-of>
+          <item> dead lift </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>SHOULDERPRESS</tag>
+        <one-of>
+          <item> shoulder press </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>LUNGES</tag>
+        <one-of>
+          <item> lunges </item>
+          <item> leg lunges </item>
+        </one-of>
+      </item>
+    </one-of>
+  </rule>
+</grammar>

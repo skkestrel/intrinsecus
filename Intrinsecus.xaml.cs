@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Kinect;
+using Microsoft.Speech.AudioFormat;
+using Microsoft.Speech.Recognition;
 
 namespace EhT.Intrinsecus
 {
@@ -77,6 +79,11 @@ namespace EhT.Intrinsecus
         private KinectSensor kinectSensor;
 
 		/// <summary>
+        /// Speech recognition engine using audio data from Kinect.
+        /// </summary>
+        private AudioSpeechEngine speechEngine = null;
+
+		/// <summary>
 		/// Coordinate mapper to map one type of point to another
 		/// </summary>
 		private readonly CoordinateMapper coordinateMapper;
@@ -123,6 +130,12 @@ namespace EhT.Intrinsecus
             // get size of joint space
             displayWidth = frameDescription.Width;
             displayHeight = frameDescription.Height;
+
+            if (kinectSensor != null)
+            {
+                this.speechEngine = new AudioSpeechEngine(kinectSensor);
+                this.speechEngine.CommandRecieved += AudioCommandReceived;
+            }
 
             // open the reader for the body frames
             bodyFrameReader = kinectSensor.BodyFrameSource.OpenReader();
@@ -270,11 +283,34 @@ namespace EhT.Intrinsecus
 	        }
         }
 
-		/// <summary>
-		/// Draws a body
-		/// </summary>
-		/// <param name="drawingContext">drawing context to draw to</param>
-		/// <param name="drawingPen">specifies color to draw a specific body</param>
+        void AudioCommandReceived(object sender, AudioCommandEventArgs e)
+        {
+            switch (e.command)
+            {
+                case AudioCommand.BACK:
+                    break;
+                case AudioCommand.ENTER:
+                    break;
+                case AudioCommand.SQUAT:
+                    ExerciseLabel.Content = "Squat";
+                    break;
+                case AudioCommand.DEADLIFT:
+                    ExerciseLabel.Content = "Deadlift";
+                    break;
+                case AudioCommand.LUNGES:
+                    ExerciseLabel.Content = "Lunges";
+                    break;
+                case AudioCommand.SHOULDERPRESS:
+                    ExerciseLabel.Content = "Shoulder Press";
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Draws a body
+        /// </summary>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        /// <param name="drawingPen">specifies color to draw a specific body</param>
 		private void DrawBody(DrawingContext drawingContext, Pen drawingPen)
         {
             // Draw the bones
@@ -309,12 +345,12 @@ namespace EhT.Intrinsecus
 			*/
         }
 
-		/// <summary>
-		/// Draws one bone of a body (joint to joint)
-		/// </summary>
+        /// <summary>
+        /// Draws one bone of a body (joint to joint)
+        /// </summary>
 		/// <param name="bone">the bone</param>
-		/// <param name="drawingContext">drawing context to draw to</param>
-		/// /// <param name="drawingPen">specifies color to draw a specific bone</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        /// /// <param name="drawingPen">specifies color to draw a specific bone</param>
 		private void DrawBone(Bone bone, DrawingContext drawingContext, Pen drawingPen)
         {
             // If we can't find either of these joints, exit
