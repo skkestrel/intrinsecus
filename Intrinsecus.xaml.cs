@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
@@ -100,6 +101,11 @@ namespace EhT.Intrinsecus
 		/// the current exercise in play
 		/// </summary>
 		public IExercise CurrentExercise;
+
+		/// <summary>
+		/// the current exercise in play
+		/// </summary>
+		public SelectionDialogue SingletonSelectionDialogue = null;
 
 		/// <summary>
 		/// Radius of drawn hand circles
@@ -206,7 +212,15 @@ namespace EhT.Intrinsecus
 			colorBitmap = new WriteableBitmap(colorFrameDescription.Width, colorFrameDescription.Height, 96.0, 96.0, PixelFormats.Bgr32, null);
 
 			synth = new SpeechSynthesizer();
-			synth.SetOutputToDefaultAudioDevice();
+
+			try
+			{
+				synth.SetOutputToDefaultAudioDevice();
+			}
+			catch (PlatformNotSupportedException)
+			{
+				synth = null;
+			}
 
 			// initialize the components (controls) of the window
 			InitializeComponent();
@@ -222,6 +236,9 @@ namespace EhT.Intrinsecus
 			if (bodyFrameReader != null)
 			{
 				bodyFrameReader.FrameArrived += Reader_FrameArrived;
+			}
+			if (colorFrameReader != null)
+			{
 				colorFrameReader.FrameArrived += Reader_ColorFrameArrived;
 			}
 
@@ -340,9 +357,9 @@ namespace EhT.Intrinsecus
 						}
 
 						int t = CurrentExercise.Update(body, dc, this);
-                        RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/" 
-                            + CurrentExercise.GetTargetReps().ToString(CultureInfo.InvariantCulture);
-                        if (t >= CurrentExercise.GetTargetReps())
+						RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/"
+							+ CurrentExercise.GetTargetReps().ToString(CultureInfo.InvariantCulture);
+						if (t >= CurrentExercise.GetTargetReps())
 						{
 							SetExercise(null);
 						}
@@ -391,8 +408,6 @@ namespace EhT.Intrinsecus
 
 		public Point CameraToScreen(CameraSpacePoint point)
 		{
-			CameraSpacePoint position = point;
-
 			if (point.Z < 0)
 			{
 				point.Z = 0.1f;
@@ -406,14 +421,19 @@ namespace EhT.Intrinsecus
 		public void SetExercise(IExercise e)
 		{
 			CurrentExercise = e;
+
+			if (synth == null) return;
+
 			if (CurrentExercise != null)
 			{
 				synth.SpeakAsync("Starting a set of " + CurrentExercise.GetPhoneticName());
+				InstructionLabel.Content = "None";
 				ExerciseLabel.Content = CurrentExercise.GetName();
 			}
 			else
 			{
 				synth.SpeakAsync("Exercise finished");
+				InstructionLabel.Content = "None";
 				ExerciseLabel.Content = "None";
 			}
 		}
@@ -424,7 +444,12 @@ namespace EhT.Intrinsecus
 			{
 				// not implemented BACK, ENTER, SQUAT, DEADLIFT, LUNGES, SHOULDERPRESS
 				case AudioCommand.SELECT:
-					new SelectionDialogue(this).Show();
+					if (SingletonSelectionDialogue == null)
+					{
+						SingletonSelectionDialogue = new SelectionDialogue(this);
+						SingletonSelectionDialogue.Show();
+					}
+
 					break;
 			}
 		}

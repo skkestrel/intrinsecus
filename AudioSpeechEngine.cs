@@ -21,7 +21,8 @@ namespace EhT.Intrinsecus
         SELECT,
         JUMPINGJACK,
         VERTICALJUMP,
-        LATERALFLY
+        LATERALFLY,
+        REPCOMMAND
     }
 
     public class AudioSpeechEngine
@@ -175,7 +176,9 @@ namespace EhT.Intrinsecus
                     case "VERTICALJUMPTEST":
                         args.command = AudioCommand.VERTICALJUMP;
                         break;
-
+                    case "REPSET":
+                        args.command = AudioCommand.REPCOMMAND;
+                        break;
                 }
 
                 handler(this, args);
