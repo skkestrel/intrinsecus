@@ -83,30 +83,54 @@ namespace EhT.Intrinsecus
             this.Close();
         }
 
+        private void VerticalJumpButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartVerticalJump();
+        }
+
+        private void StartVerticalJump()
+        {
+            this.parent.SetExercise(new VerticalJumpTest());
+            this.Close();
+        }
+        private void LateralFlyButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartLateralFly();
+        }
+
+        private void StartLateralFly()
+        {
+            this.parent.SetExercise(new LateralFly());
+            this.Close();
+        }
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
         {
             switch (e.command)
             {
-                // not implemented ENTER
+                // not implemented ENTER, SELECT
                 case AudioCommand.BACK:
                     this.Close();
-                    break;
-                case AudioCommand.SQUAT:
-                    StartSquats();
                     break;
                 case AudioCommand.DEADLIFT:
                     StartDeadlifts();
                     break;
+                case AudioCommand.JUMPINGJACK:
+                    StartJumpingJacks();
+                    break;
                 case AudioCommand.LUNGES:
                     StartSplitLegLunges();
+                    break;
+                case AudioCommand.LATERALFLY:
+                    StartLateralFly();
                     break;
                 case AudioCommand.SHOULDERPRESS:
                     StartShoulderPresses();
                     break;
-                case AudioCommand.JUMPINGJACK:
-                    StartJumpingJacks();
+                case AudioCommand.SQUAT:
+                    StartSquats();
                     break;
-                case AudioCommand.SELECT:
+                case AudioCommand.VERTICALJUMP:
+                    StartVerticalJump();
                     break;
             }
         }
