@@ -12,12 +12,11 @@ namespace EhT.Intrinsecus
     /// </summary>
     public partial class MainWindow : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Gets the bitmap to display
+        /// </summary>
+        public ImageSource ImageSource { get; private set; }
 
-        enum BoneNames { Neck, ShoulderBladeLeft, ShoulderBladeRight, UpperArmLeft, UpperArmRight, ForeArmLeft, 
-            ForeArmRight, PalmLeft, PalmRight, FingerLeft, FingerRight, ThumbLeft, ThumbRight, PelvisLeft, PelvisRight,
-        FemurLeft, FemurRight, CalfLeft, CalfRight, PedalLeft, PedalRight }
-        
-       	         
         /// <summary>
         /// Radius of drawn hand circles
         /// </summary>
@@ -72,11 +71,6 @@ namespace EhT.Intrinsecus
         /// Drawing group for body rendering output
         /// </summary>
         private readonly DrawingGroup drawingGroup;
-
-        /// <summary>
-        /// Drawing image that we will display
-        /// </summary>
-        private readonly DrawingImage imageSource;
 
         /// <summary>
         /// Active Kinect sensor
@@ -190,7 +184,7 @@ namespace EhT.Intrinsecus
             drawingGroup = new DrawingGroup();
 
             // Create an image source that we can use in our image control
-            imageSource = new DrawingImage(drawingGroup);
+            ImageSource = new DrawingImage(drawingGroup);
 
             // use the window object as the view model in this simple example
             DataContext = this;
@@ -203,17 +197,6 @@ namespace EhT.Intrinsecus
         /// INotifyPropertyChangedPropertyChanged event to allow window controls to bind to changeable data
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Gets the bitmap to display
-        /// </summary>
-        public ImageSource ImageSource
-        {
-            get
-            {
-                return imageSource;
-            }
-        }
 
         /// <summary>
         /// Execute start up tasks
