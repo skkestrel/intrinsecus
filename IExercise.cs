@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace EhT.Intrinsecus
 {
-    interface IExercise
+	public interface IExercise
     {
-        bool Update(System.Windows.Media.DrawingContext ctx);
-
+		/// <summary>
+		/// update the exercise status
+		/// </summary>
+		/// <param name="ctx">the drawing context for the viewbox</param>
+		/// <returns>the number of reps completed</returns>returns>
+        int Update(System.Windows.Media.DrawingContext ctx);
     }
 
 

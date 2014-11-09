@@ -10,11 +10,11 @@
 			<RowDefinition/>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
-		<Button Content="Squats" Margin="10" Click="Button_Click" Grid.Row="1"/>
-		<Button Content="Deadlifts" Margin="10" Click="Button_Click"/>
-		<Button Content="Shoulder Press" Margin="10" Click="Button_Click" Grid.Row="2"/>
-		<Button Content="Split leg lunges" Margin="10" Click="Button_Click" Grid.Row="3"/>
-		<Button Content="Squats" Margin="10" Click="Button_Click" Grid.Row="4"/>
+		<Button x:Name="SquatsButton" Content="Squats" Margin="10" Click="SquatsButton_Click" Grid.Row="1"/>
+		<Button x:Name="DeadliftsButton" Content="Deadlifts" Margin="10" Click="DeadliftsButton_Click"/>
+		<Button x:Name="ShoulderPressesButton" Content="Shoulder Press" Margin="10" Click="ShoulderPressesButton_Click" Grid.Row="2"/>
+		<Button x:Name="SplitLegLungesButton" Content="Split leg lunges" Margin="10" Click="SplitLegLungesButton_Click" Grid.Row="3"/>
+		<Button x:Name="SquatsButton1" Content="Squats" Margin="10" Click="SquatsButton1_Click" Grid.Row="4"/>
 
 
 	</Grid>

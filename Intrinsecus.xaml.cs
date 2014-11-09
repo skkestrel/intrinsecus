@@ -7,14 +7,19 @@ using Microsoft.Kinect;
 namespace EhT.Intrinsecus
 {
 	/// <summary>
-    /// Interaction logic for MainWindow
+    /// Interaction logic for Intrinsecus
     /// </summary>
-    public partial class MainWindow
+    public partial class Intrinsecus
     {
         /// <summary>
         /// Gets the bitmap to display
         /// </summary>
         public ImageSource ImageSource { get; private set; }
+
+		/// <summary>
+		/// the target of reps
+		/// </summary>
+		private int targetReps = 10;
 
         /// <summary>
         /// Thickness of clip edge rectangles
@@ -44,7 +49,7 @@ namespace EhT.Intrinsecus
 		/// <summary>
         /// Speech recognition engine using audio data from Kinect.
         /// </summary>
-        private AudioSpeechEngine speechEngine;
+        public AudioSpeechEngine speechEngine;
 
 		/// <summary>
 		/// Coordinate mapper to map one type of point to another
@@ -76,10 +81,15 @@ namespace EhT.Intrinsecus
         /// </summary>
         private readonly List<Pen> bodyColors;
 
+		/// <summary>
+		/// the current exercise in play
+		/// </summary>
+		public IExercise currentExercise;
+
         /// <summary>
-        /// Initializes a new instance of the MainWindow class.
+        /// Initializes a new instance of the Intrinsecus class.
         /// </summary>
-        public MainWindow()
+        public Intrinsecus()
         {
             // one sensor is currently supported
             kinectSensor = KinectSensor.GetDefault();
@@ -223,6 +233,11 @@ namespace EhT.Intrinsecus
 			        DrawBody(dc, drawPen);
 		        }
 
+		        if (currentExercise != null && currentExercise.Update(dc) >= targetReps)
+		        {
+			        currentExercise = null;
+		        }
+
 		        // prevent drawing outside of our render area
 		        drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
 	        }
@@ -362,7 +377,7 @@ namespace EhT.Intrinsecus
 
         private void SelectionDialogueButton_Click(object sender, RoutedEventArgs e)
         {
-            new SelectionDialogue().Show();
+            new SelectionDialogue(this).Show();
         }
     }
 }

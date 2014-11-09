@@ -62,6 +62,4 @@ namespace EhT.Intrinsecus
 			PedalRight, FemurLeft, CalfLeft, PedalLeft
 		};
     }
-
-     
 }
