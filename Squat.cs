@@ -11,6 +11,7 @@ namespace EhT.Intrinsecus
         public int reps;
 
         bool RepComplete;
+
         public Squat()
         {
             reps = 0;
@@ -18,15 +19,17 @@ namespace EhT.Intrinsecus
 
         public bool Update(Body body, System.Windows.Media.DrawingContext ctx)
     {
-
+        
         float HipPoint = body.Joints[JointType.HipLeft].Position.Y;
         float KneePoint = body.Joints[JointType.KneeLeft].Position.Y;
 
 
         float HipKnee = HipPoint - KneePoint;
        
-       if (HipKnee > 0) {
-           if (RepComplete) {
+			if (HipKnee > 0)
+			{
+				if (RepComplete)
+				{
                    reps++;
                 RepComplete = false;
            }
@@ -54,7 +57,7 @@ namespace EhT.Intrinsecus
         //case: anglebetween femur < 75
             //warn too low
 
-      return true;
+			return 0;
     }
 
 

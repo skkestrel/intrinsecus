@@ -12,9 +12,19 @@ namespace EhT.Intrinsecus
     public partial class Intrinsecus
     {
         /// <summary>
+        /// Thickness of drawn joint lines
+        /// </summary>
+        private const double JointThickness = 3;
+
+        /// <summary>
         /// Gets the bitmap to display
         /// </summary>
         public ImageSource ImageSource { get; private set; }
+
+        /// <summary>
+        /// Constant for clamping Z values of camera space points from being negative
+        /// </summary>
+        private const float InferredZPositionClamp = 0.1f;
 
 		/// <summary>
 		/// the target of reps
@@ -25,11 +35,6 @@ namespace EhT.Intrinsecus
         /// Thickness of clip edge rectangles
         /// </summary>
         private const double ClipBoundsThickness = 10;
-
-		/// <summary>
-		/// Zpos clamp
-		/// </summary>
-		private const float ZPosClamp = 0.1F;
 
         /// <summary>
         /// Pen used for drawing bones that are currently inferred
@@ -85,6 +90,37 @@ namespace EhT.Intrinsecus
 		/// the current exercise in play
 		/// </summary>
 		public IExercise currentExercise;
+
+        /// <summary>
+        /// Radius of drawn hand circles
+        /// </summary>
+        private const double HandSize = 30;
+
+
+		/// <summary>
+		/// brush for closed hand
+		/// </summary>
+        private readonly Brush handClosedBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0));
+
+        /// <summary>
+        /// Brush used for drawing hands that are currently tracked as opened
+        /// </summary>
+        private readonly Brush handOpenBrush = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
+
+        /// <summary>
+        /// Brush used for drawing hands that are currently tracked as in lasso (pointer) position
+        /// </summary>
+        private readonly Brush handLassoBrush = new SolidColorBrush(Color.FromArgb(128, 0, 0, 255));
+
+        /// <summary>
+        /// Brush used for drawing joints that are currently tracked
+        /// </summary>
+        private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
+
+        /// <summary>
+        /// Brush used for drawing joints that are currently inferred
+        /// </summary>        
+        private readonly Brush inferredJointBrush = Brushes.Yellow;
 
         /// <summary>
         /// Initializes a new instance of the Intrinsecus class.
@@ -186,62 +222,74 @@ namespace EhT.Intrinsecus
         /// </summary>
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
-        private void Reader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
-        {
-            bool dataReceived = false;
+		private void Reader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
+		{
+			bool dataReceived = false;
 
-            using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
-            {
-             
-                if (bodyFrame != null)
-                {
-                    if (bodies == null)
-                    {
-                        bodies = new Body[bodyFrame.BodyCount];
-                    }
+			using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
+			{
+				if (bodyFrame != null)
+				{
+					if (bodies == null)
+					{
+						bodies = new Body[bodyFrame.BodyCount];
+					}
 
-                    // The first time GetAndRefreshBodyData is called, Kinect will allocate each Body in the array.
-                    // As long as those body objects are not disposed and not set to null in the array,
-                    // those body objects will be re-used.
-                    bodyFrame.GetAndRefreshBodyData(bodies);
-                    dataReceived = true;
-                }
-            }
+					// The first time GetAndRefreshBodyData is called, Kinect will allocate each Body in the array.
+					// As long as those body objects are not disposed and not set to null in the array,
+					// those body objects will be re-used.
+					bodyFrame.GetAndRefreshBodyData(bodies);
+					dataReceived = true;
+				}
+			}
 
-	        if (!dataReceived) return;
+			if (dataReceived)
+			{
+				using (DrawingContext dc = drawingGroup.Open())
+				{
+					// Draw a transparent background to set the render size
+					dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
 
-	        using (DrawingContext dc = drawingGroup.Open())
-	        {
-		        // Draw a transparent background to set the render size
-		        dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
+					int penIndex = 0;
+					foreach (Body body in bodies)
+					{
+						Pen drawPen = bodyColors[penIndex++];
 
-		        int penIndex = 0;
+						if (body.IsTracked)
+						{
+							DrawClippedEdges(body, dc);
 
-		        foreach (Body body in bodies)
-		        {
-			        Pen drawPen = bodyColors[penIndex++];
+							IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
 
-			        if (!body.IsTracked) continue;
+							// convert the joint points to depth (display) space
+							Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
 
-			        DrawClippedEdges(body, dc);
+							foreach (JointType jointType in joints.Keys)
+							{
+								// sometimes the depth(Z) of an inferred joint may show as negative
+								// clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
+								CameraSpacePoint position = joints[jointType].Position;
+								if (position.Z < 0)
+								{
+									position.Z = InferredZPositionClamp;
+								}
 
-					foreach (Bone bone in Bone.Bones)
-			        {
-						bone.Update(body.Joints);
-			        }
+								DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
+								jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+							}
 
-			        DrawBody(dc, drawPen);
-		        }
+							DrawBody(joints, jointPoints, dc, drawPen);
 
-		        if (currentExercise != null && currentExercise.Update(dc) >= targetReps)
-		        {
-			        currentExercise = null;
-		        }
+							DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
+							DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+						}
+					}
 
-		        // prevent drawing outside of our render area
-		        drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
-	        }
-        }
+					// prevent drawing outside of our render area
+					drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
+				}
+			}
+		}
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
         {
@@ -266,60 +314,98 @@ namespace EhT.Intrinsecus
             }
         }
 
-        /// <summary>
-        /// Draws a body
-        /// </summary>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        /// <param name="drawingPen">specifies color to draw a specific body</param>
-		private void DrawBody(DrawingContext drawingContext, Pen drawingPen)
-        {
-            // Draw the bones
-            foreach (Bone bone in Bone.Bones)
-            {
-                DrawBone(bone, drawingContext, drawingPen);
-            }
-        }
-
-        /// <summary>
-        /// Draws one bone of a body (joint to joint)
-        /// </summary>
-		/// <param name="bone">the bone</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        /// /// <param name="drawingPen">specifies color to draw a specific bone</param>
-		private void DrawBone(Bone bone, DrawingContext drawingContext, Pen drawingPen)
-        {
-            // If we can't find either of these joints, exit
-            if (bone.FirstJoint.TrackingState == TrackingState.NotTracked ||
-                bone.SecondJoint.TrackingState == TrackingState.NotTracked)
-            {
-                return;
-            }
-
-            // We assume all drawn bones are inferred unless BOTH joints are tracked
-            Pen drawPen = inferredBonePen;
-            if ((bone.FirstJoint.TrackingState == TrackingState.Tracked) && (bone.FirstJoint.TrackingState == TrackingState.Tracked))
-            {
-                drawPen = drawingPen;
-            }
-
-	        CameraSpacePoint point1 = bone.FirstJoint.Position;
-			if (point1.Z < 0f)
+		/// <summary>
+		/// Draws a body
+		/// </summary>
+		/// <param name="joints">joints to draw</param>
+		/// <param name="jointPoints">translated positions of joints to draw</param>
+		/// <param name="drawingContext">drawing context to draw to</param>
+		/// <param name="drawingPen">specifies color to draw a specific body</param>
+		private void DrawBody(IReadOnlyDictionary<JointType, Joint> joints, IDictionary<JointType, Point> jointPoints, DrawingContext drawingContext, Pen drawingPen)
+		{
+			// Draw the bones
+			foreach (var bone in Bone.Bones)
 			{
-				point1.Z = ZPosClamp;
-			}
-	        CameraSpacePoint point2 = bone.SecondJoint.Position;
-			if (point2.Z < 0f)
-			{
-				point2.Z = ZPosClamp;
+				DrawBone(joints, jointPoints, bone.Item1, bone.Item2, drawingContext, drawingPen);
 			}
 
-	        DepthSpacePoint firstDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(point1);
-	        DepthSpacePoint secondDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(point2);
-	        Point firstPoint = new Point(firstDepthSpacePoint.X, firstDepthSpacePoint.Y);
-	        Point secondPoint = new Point(secondDepthSpacePoint.X, secondDepthSpacePoint.Y);
+			// Draw the joints
+			foreach (JointType jointType in joints.Keys)
+			{
+				Brush drawBrush = null;
 
-	        drawingContext.DrawLine(drawPen, firstPoint, secondPoint);
-        }
+				TrackingState trackingState = joints[jointType].TrackingState;
+
+				if (trackingState == TrackingState.Tracked)
+				{
+					drawBrush = trackedJointBrush;
+				}
+				else if (trackingState == TrackingState.Inferred)
+				{
+					drawBrush = inferredJointBrush;
+				}
+
+				if (drawBrush != null)
+				{
+					drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Draws one bone of a body (joint to joint)
+		/// </summary>
+		/// <param name="joints">joints to draw</param>
+		/// <param name="jointPoints">translated positions of joints to draw</param>
+		/// <param name="jointType0">first joint of bone to draw</param>
+		/// <param name="jointType1">second joint of bone to draw</param>
+		/// <param name="drawingContext">drawing context to draw to</param>
+		/// /// <param name="drawingPen">specifies color to draw a specific bone</param>
+		private void DrawBone(IReadOnlyDictionary<JointType, Joint> joints, IDictionary<JointType, Point> jointPoints, JointType jointType0, JointType jointType1, DrawingContext drawingContext, Pen drawingPen)
+		{
+			Joint joint0 = joints[jointType0];
+			Joint joint1 = joints[jointType1];
+
+			// If we can't find either of these joints, exit
+			if (joint0.TrackingState == TrackingState.NotTracked ||
+				joint1.TrackingState == TrackingState.NotTracked)
+			{
+				return;
+			}
+
+			// We assume all drawn bones are inferred unless BOTH joints are tracked
+			Pen drawPen = inferredBonePen;
+			if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
+			{
+				drawPen = drawingPen;
+			}
+
+			drawingContext.DrawLine(drawPen, jointPoints[jointType0], jointPoints[jointType1]);
+		}
+
+		/// <summary>
+		/// Draws a hand symbol if the hand is tracked: red circle = closed, green circle = opened; blue circle = lasso
+		/// </summary>
+		/// <param name="handState">state of the hand</param>
+		/// <param name="handPosition">position of the hand</param>
+		/// <param name="drawingContext">drawing context to draw to</param>
+		private void DrawHand(HandState handState, Point handPosition, DrawingContext drawingContext)
+		{
+			switch (handState)
+			{
+				case HandState.Closed:
+					drawingContext.DrawEllipse(handClosedBrush, null, handPosition, HandSize, HandSize);
+					break;
+
+				case HandState.Open:
+					drawingContext.DrawEllipse(handOpenBrush, null, handPosition, HandSize, HandSize);
+					break;
+
+				case HandState.Lasso:
+					drawingContext.DrawEllipse(handLassoBrush, null, handPosition, HandSize, HandSize);
+					break;
+			}
+		}
 
         /// <summary>
         /// Draws indicators to show which edges are clipping body data
