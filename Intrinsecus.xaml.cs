@@ -323,7 +323,25 @@ namespace EhT.Intrinsecus
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
         {
-
+            switch (e.command)
+            {
+                case AudioCommand.BACK:
+                    break;
+                case AudioCommand.ENTER:
+                    break;
+                case AudioCommand.SQUAT:
+                    ExerciseLabel.Content = "Squat";
+                    break;
+                case AudioCommand.DEADLIFT:
+                    ExerciseLabel.Content = "Deadlift";
+                    break;
+                case AudioCommand.LUNGES:
+                    ExerciseLabel.Content = "Lunges";
+                    break;
+                case AudioCommand.SHOULDERPRESS:
+                    ExerciseLabel.Content = "Shoulder Press";
+                    break;
+            }
         }
 
         /// <summary>
