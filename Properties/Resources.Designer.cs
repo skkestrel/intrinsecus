@@ -95,5 +95,30 @@ namespace EhT.Intrinsecus.Properties {
                 return ResourceManager.GetString("SensorNotAvailableStatusText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;grammar version=&quot;1.0&quot; xml:lang=&quot;en-US&quot; root=&quot;rootRule&quot; tag-format=&quot;semantics/1.0-literals&quot; xmlns=&quot;http://www.w3.org/2001/06/grammar&quot;&gt;
+        ///  &lt;rule id=&quot;rootRule&quot;&gt;
+        ///    &lt;one-of&gt;
+        ///      &lt;item&gt;
+        ///        &lt;tag&gt;ENTER&lt;/tag&gt;
+        ///        &lt;one-of&gt;
+        ///          &lt;item&gt; enter &lt;/item&gt;
+        ///          &lt;item&gt; enters &lt;/item&gt;
+        ///          &lt;item&gt; select &lt;/item&gt;
+        ///        &lt;/one-of&gt;
+        ///      &lt;/item&gt;
+        ///      &lt;item&gt;
+        ///        &lt;tag&gt;BACK&lt;/tag&gt;
+        ///        &lt;one-of&gt;
+        ///          &lt;item&gt; backward &lt;/item&gt;
+        ///          &lt;item&gt; backwards &lt;/item&gt;
+        ///          &lt;item&gt; bac [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SpeechGrammar {
+            get {
+                return ResourceManager.GetString("SpeechGrammar", resourceCulture);
+            }
+        }
     }
 }
