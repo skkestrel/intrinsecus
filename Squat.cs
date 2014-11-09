@@ -8,9 +8,10 @@ namespace EhT.Intrinsecus
 {
 	public class Squat : IExercise
 	{
-		public int reps;
+		private int repflashtick = 0;
+		private int reps = 0;
 
-		bool RepComplete;
+		private bool repComplete;
 
 		public Squat()
 		{
@@ -22,42 +23,44 @@ namespace EhT.Intrinsecus
 			float HipPoint = body.Joints[JointType.HipLeft].Position.Y;
 			float KneePoint = body.Joints[JointType.KneeLeft].Position.Y;
 
-
 			float HipKnee = HipPoint - KneePoint;
 
 			if (HipKnee > 0)
 			{
-				if (RepComplete)
+				if (repComplete)
 				{
 					reps++;
-					RepComplete = false;
+					repComplete = false;
 				}
 			}
 			else
 			{
-				RepComplete = true;
+				repComplete = true;
+				repflashtick = 0;
 			}
 
-
-			Pen HighlightPen = new Pen(Brushes.Green, 10);
-
-			CameraSpacePoint position1 = body.Joints[JointType.HipLeft].Position;
-			CameraSpacePoint position2 = body.Joints[JointType.KneeLeft].Position;
-
-			if (position1.Z < 0)
+			if (repflashtick++ <= 3)
 			{
-				position1.Z = 0.1f;
-			}
-			if (position2.Z < 0)
-			{
-				position2.Z = 0.1f;
-			}
+				Pen highlightPen = new Pen(Brushes.Green, 10);
 
-			DepthSpacePoint depthSpacePoint1 = intrinsecus.CoordinateMapper.MapCameraPointToDepthSpace(position1);
-			DepthSpacePoint depthSpacePoint2 = intrinsecus.CoordinateMapper.MapCameraPointToDepthSpace(position2);
+				CameraSpacePoint position1 = body.Joints[JointType.HipLeft].Position;
+				CameraSpacePoint position2 = body.Joints[JointType.KneeLeft].Position;
 
-			ctx.DrawLine(HighlightPen, new Point(depthSpacePoint1.X, depthSpacePoint1.Y),
-				new Point(depthSpacePoint2.X, depthSpacePoint2.Y));
+				if (position1.Z < 0)
+				{
+					position1.Z = 0.1f;
+				}
+				if (position2.Z < 0)
+				{
+					position2.Z = 0.1f;
+				}
+
+				DepthSpacePoint depthSpacePoint1 = intrinsecus.CoordinateMapper.MapCameraPointToDepthSpace(position1);
+				DepthSpacePoint depthSpacePoint2 = intrinsecus.CoordinateMapper.MapCameraPointToDepthSpace(position2);
+
+				ctx.DrawLine(highlightPen, new Point(depthSpacePoint1.X, depthSpacePoint1.Y),
+					new Point(depthSpacePoint2.X, depthSpacePoint2.Y));
+			}
 
 			//if(HipJoint.y - KneeJoint.y)
 
