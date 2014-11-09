@@ -15,6 +15,7 @@ namespace EhT.Intrinsecus
         private int repFlashTicks;
         private int targetReps;
         private Intrinsecus parent;
+        private bool speechflag;
 
         enum Transition
         {
@@ -34,17 +35,9 @@ namespace EhT.Intrinsecus
             repFlashTicks = 4;
             state = Transition.DownToUp;
             this.targetReps = tarReps;
+            this.speechflag = true;
         }
 
-        ~LateralFly()
-        {
-            Dispose();
-        }
-
-        public void Dispose()
-        {
-            parent.synth.SpeakAsync("Exercise finished");
-        }
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
@@ -59,6 +52,16 @@ namespace EhT.Intrinsecus
             double leftAngle = MathUtil.CosineLaw(leftElbow, centerShoulder, leftShoulder);
             double rightAngle = MathUtil.CosineLaw(rightElbow, centerShoulder, rightShoulder);
 
+            if (speechflag == true)
+            {
+                if (reps == 5) intrinsecus.synth.SpeakAsync("Only five left, you can do it!");
+                if (reps == 7) intrinsecus.synth.SpeakAsync("Three left, almost there!");
+                if (reps == 9) intrinsecus.synth.SpeakAsync("One left...");
+                if (reps == 10) intrinsecus.synth.SpeakAsync("You did your Lateral Fly's! Congratulations!");
+                speechflag = false;
+            }
+            
+            
             if ((leftAngle < 120) && (rightAngle < 120))
             {
                 if (state == Transition.UpToDown)
