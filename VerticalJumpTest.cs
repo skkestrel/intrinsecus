@@ -46,13 +46,6 @@ namespace EhT.Intrinsecus
 
         }
 
-        ~VerticalJumpTest()
-        {
-			parent.synth.SpeakAsync("Exercise finished");
-			parent.InstructionLabel.Content = "None";
-			parent.ExerciseLabel.Content = "None";
-        }
-
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
             CameraSpacePoint leftFoot = body.Joints[JointType.FootLeft].Position;
