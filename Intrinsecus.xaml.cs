@@ -21,7 +21,7 @@ namespace EhT.Intrinsecus
         /// </summary>
         public ImageSource ImageSource { get; private set; }
 
-        /// <summary>
+		/// <summary>
         /// Constant for clamping Z values of camera space points from being negative
         /// </summary>
         private const float InferredZPositionClamp = 0.1f;
@@ -36,7 +36,7 @@ namespace EhT.Intrinsecus
         /// </summary>
         private const double ClipBoundsThickness = 10;
 
-        /// <summary>
+		/// <summary>
         /// Pen used for drawing bones that are currently inferred
         /// </summary>        
         private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1);
@@ -53,6 +53,7 @@ namespace EhT.Intrinsecus
 
 		/// <summary>
         /// Speech recognition engine using audio data from Kinect.
+        /// #JUSTHACKATHONTHINGS making what should be a private variable public
         /// </summary>
         public AudioSpeechEngine speechEngine;
 
@@ -222,42 +223,42 @@ namespace EhT.Intrinsecus
         /// </summary>
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
-		private void Reader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
-		{
-			bool dataReceived = false;
+        private void Reader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
+        {
+            bool dataReceived = false;
 
-			using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
-			{
-				if (bodyFrame != null)
-				{
-					if (bodies == null)
-					{
-						bodies = new Body[bodyFrame.BodyCount];
-					}
+            using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
+            {
+                if (bodyFrame != null)
+                {
+                    if (bodies == null)
+                    {
+                        bodies = new Body[bodyFrame.BodyCount];
+                    }
 
-					// The first time GetAndRefreshBodyData is called, Kinect will allocate each Body in the array.
-					// As long as those body objects are not disposed and not set to null in the array,
-					// those body objects will be re-used.
-					bodyFrame.GetAndRefreshBodyData(bodies);
-					dataReceived = true;
-				}
-			}
+                    // The first time GetAndRefreshBodyData is called, Kinect will allocate each Body in the array.
+                    // As long as those body objects are not disposed and not set to null in the array,
+                    // those body objects will be re-used.
+                    bodyFrame.GetAndRefreshBodyData(bodies);
+                    dataReceived = true;
+                }
+            }
 
 			if (dataReceived)
 			{
-				using (DrawingContext dc = drawingGroup.Open())
-				{
-					// Draw a transparent background to set the render size
-					dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
+	        using (DrawingContext dc = drawingGroup.Open())
+	        {
+		        // Draw a transparent background to set the render size
+		        dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
 
-					int penIndex = 0;
-					foreach (Body body in bodies)
-					{
-						Pen drawPen = bodyColors[penIndex++];
+		        int penIndex = 0;
+		        foreach (Body body in bodies)
+		        {
+			        Pen drawPen = bodyColors[penIndex++];
 
 						if (body.IsTracked)
 						{
-							DrawClippedEdges(body, dc);
+			        DrawClippedEdges(body, dc);
 
 							IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
 
@@ -270,26 +271,31 @@ namespace EhT.Intrinsecus
 								// clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
 								CameraSpacePoint position = joints[jointType].Position;
 								if (position.Z < 0)
-								{
+			        {
 									position.Z = InferredZPositionClamp;
-								}
+			        }
 
 								DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
 								jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
-							}
+		        }
 
 							DrawBody(joints, jointPoints, dc, drawPen);
 
 							DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
 							DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
 						}
-					}
+		        }
 
-					// prevent drawing outside of our render area
-					drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
-				}
-			}
+		        // prevent drawing outside of our render area
+		        drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
+	        }
+        }
 		}
+
+        public void setCurrentExcersize(IExercise e)
+        {
+            currentExercise = e;
+        }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
         {
@@ -311,23 +317,26 @@ namespace EhT.Intrinsecus
                 case AudioCommand.SHOULDERPRESS:
                     ExerciseLabel.Content = "Shoulder Press";
                     break;
+                case AudioCommand.SELECT:
+                    new SelectionDialogue(this).Show();
+                    break;
             }
         }
 
-		/// <summary>
-		/// Draws a body
-		/// </summary>
+        /// <summary>
+        /// Draws a body
+        /// </summary>
 		/// <param name="joints">joints to draw</param>
 		/// <param name="jointPoints">translated positions of joints to draw</param>
-		/// <param name="drawingContext">drawing context to draw to</param>
-		/// <param name="drawingPen">specifies color to draw a specific body</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        /// <param name="drawingPen">specifies color to draw a specific body</param>
 		private void DrawBody(IReadOnlyDictionary<JointType, Joint> joints, IDictionary<JointType, Point> jointPoints, DrawingContext drawingContext, Pen drawingPen)
-		{
-			// Draw the bones
+        {
+            // Draw the bones
 			foreach (var bone in Bone.Bones)
-			{
+            {
 				DrawBone(joints, jointPoints, bone.Item1, bone.Item2, drawingContext, drawingPen);
-			}
+            }
 
 			// Draw the joints
 			foreach (JointType jointType in joints.Keys)
@@ -339,7 +348,7 @@ namespace EhT.Intrinsecus
 				if (trackingState == TrackingState.Tracked)
 				{
 					drawBrush = trackedJointBrush;
-				}
+        }
 				else if (trackingState == TrackingState.Inferred)
 				{
 					drawBrush = inferredJointBrush;
@@ -352,33 +361,33 @@ namespace EhT.Intrinsecus
 			}
 		}
 
-		/// <summary>
-		/// Draws one bone of a body (joint to joint)
-		/// </summary>
+        /// <summary>
+        /// Draws one bone of a body (joint to joint)
+        /// </summary>
 		/// <param name="joints">joints to draw</param>
 		/// <param name="jointPoints">translated positions of joints to draw</param>
 		/// <param name="jointType0">first joint of bone to draw</param>
 		/// <param name="jointType1">second joint of bone to draw</param>
-		/// <param name="drawingContext">drawing context to draw to</param>
-		/// /// <param name="drawingPen">specifies color to draw a specific bone</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        /// /// <param name="drawingPen">specifies color to draw a specific bone</param>
 		private void DrawBone(IReadOnlyDictionary<JointType, Joint> joints, IDictionary<JointType, Point> jointPoints, JointType jointType0, JointType jointType1, DrawingContext drawingContext, Pen drawingPen)
-		{
+        {
 			Joint joint0 = joints[jointType0];
 			Joint joint1 = joints[jointType1];
 
-			// If we can't find either of these joints, exit
+            // If we can't find either of these joints, exit
 			if (joint0.TrackingState == TrackingState.NotTracked ||
 				joint1.TrackingState == TrackingState.NotTracked)
-			{
-				return;
-			}
+            {
+                return;
+            }
 
-			// We assume all drawn bones are inferred unless BOTH joints are tracked
-			Pen drawPen = inferredBonePen;
+            // We assume all drawn bones are inferred unless BOTH joints are tracked
+            Pen drawPen = inferredBonePen;
 			if ((joint0.TrackingState == TrackingState.Tracked) && (joint1.TrackingState == TrackingState.Tracked))
-			{
-				drawPen = drawingPen;
-			}
+            {
+                drawPen = drawingPen;
+            }
 
 			drawingContext.DrawLine(drawPen, jointPoints[jointType0], jointPoints[jointType1]);
 		}
@@ -390,7 +399,7 @@ namespace EhT.Intrinsecus
 		/// <param name="handPosition">position of the hand</param>
 		/// <param name="drawingContext">drawing context to draw to</param>
 		private void DrawHand(HandState handState, Point handPosition, DrawingContext drawingContext)
-		{
+			{
 			switch (handState)
 			{
 				case HandState.Closed:
@@ -405,7 +414,7 @@ namespace EhT.Intrinsecus
 					drawingContext.DrawEllipse(handLassoBrush, null, handPosition, HandSize, HandSize);
 					break;
 			}
-		}
+        }
 
         /// <summary>
         /// Draws indicators to show which edges are clipping body data

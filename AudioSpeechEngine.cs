@@ -17,7 +17,8 @@ namespace EhT.Intrinsecus
         SQUAT,
         DEADLIFT,
         LUNGES,
-        SHOULDERPRESS
+        SHOULDERPRESS,
+        SELECT
     }
 
     public class AudioSpeechEngine
@@ -33,6 +34,7 @@ namespace EhT.Intrinsecus
         private SpeechRecognitionEngine speechEngine = null;
 
         public event EventHandler<AudioCommandEventArgs> CommandRecieved;
+
 
         public AudioSpeechEngine(KinectSensor kinectSensor)
         {
@@ -74,6 +76,9 @@ namespace EhT.Intrinsecus
                 this.speechEngine.RecognizeAsync(RecognizeMode.Multiple);
             }
         }
+
+
+        
 
         /// <summary>
         /// Gets the metadata for the speech recognizer (acoustic model) most suitable to
@@ -150,6 +155,10 @@ namespace EhT.Intrinsecus
 
                     case "SHOULDERPRESS":
                         args.command = AudioCommand.SHOULDERPRESS;
+                        break;
+
+                    case "SELECT":
+                        args.command = AudioCommand.SELECT;
                         break;
                 }
 
