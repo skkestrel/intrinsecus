@@ -87,10 +87,9 @@ namespace EhT.Intrinsecus
         {
             switch (e.command)
             {
+                // not implemented ENTER
                 case AudioCommand.BACK:
                     this.Close();
-                    break;
-                case AudioCommand.ENTER:
                     break;
                 case AudioCommand.SQUAT:
                     StartSquats();

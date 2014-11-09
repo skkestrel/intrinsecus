@@ -35,7 +35,7 @@ namespace EhT.Intrinsecus
            }
        }
        else
-       {
+        {
            RepComplete = true;
        }
        
@@ -58,6 +58,16 @@ namespace EhT.Intrinsecus
             //warn too low
     //  Debug.WriteLine("{0}", reps);
 			return reps;
-    }
+        }
+
+        public string getName()
+        {
+            return "Squat";
+        }
+
+        public string getPhoneticName()
+        {
+            return "Squats";
+        }
     }
 }

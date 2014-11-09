@@ -10,6 +10,10 @@ namespace EhT.Intrinsecus
 		/// <param name="body">the body to update for</param>
 		/// <param name="ctx">the drawing context for the viewbox</param>
 		/// <returns>the number of reps completed</returns>returns>
-		int Update(Body body, System.Windows.Media.DrawingContext ctx);
+        int Update(Body body, System.Windows.Media.DrawingContext ctx);
+
+        string getName();
+
+        string getPhoneticName();
     }
 }

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
 {
-	/// <summary>
+    /// <summary>
     /// Interaction logic for Intrinsecus
     /// </summary>
     public partial class Intrinsecus
@@ -21,22 +22,22 @@ namespace EhT.Intrinsecus
         /// </summary>
         public ImageSource ImageSource { get; private set; }
 
-		/// <summary>
+        /// <summary>
         /// Constant for clamping Z values of camera space points from being negative
         /// </summary>
         private const float InferredZPositionClamp = 0.1f;
 
 		/// <summary>
-		/// the target of reps
-		/// </summary>
-		private int targetReps = 10;
+        /// the target of reps
+        /// </summary>
+        private int targetReps = 10;
 
         /// <summary>
         /// Thickness of clip edge rectangles
         /// </summary>
         private const double ClipBoundsThickness = 10;
 
-		/// <summary>
+        /// <summary>
         /// Pen used for drawing bones that are currently inferred
         /// </summary>        
         private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1);
@@ -51,16 +52,16 @@ namespace EhT.Intrinsecus
         /// </summary>
         private KinectSensor kinectSensor;
 
-		/// <summary>
+        /// <summary>
         /// Speech recognition engine using audio data from Kinect.
         /// #JUSTHACKATHONTHINGS making what should be a private variable public
         /// </summary>
         public AudioSpeechEngine speechEngine;
 
-		/// <summary>
-		/// Coordinate mapper to map one type of point to another
-		/// </summary>
-		private readonly CoordinateMapper coordinateMapper;
+        /// <summary>
+        /// Coordinate mapper to map one type of point to another
+        /// </summary>
+        private readonly CoordinateMapper coordinateMapper;
 
         /// <summary>
         /// Reader for body frames
@@ -87,10 +88,12 @@ namespace EhT.Intrinsecus
         /// </summary>
         private readonly List<Pen> bodyColors;
 
-		/// <summary>
-		/// the current exercise in play
-		/// </summary>
-		public IExercise currentExercise;
+        private SpeechSynthesizer synth;
+
+        /// <summary>
+        /// the current exercise in play
+        /// </summary>
+        public IExercise currentExercise;
 
         /// <summary>
         /// Radius of drawn hand circles
@@ -150,7 +153,7 @@ namespace EhT.Intrinsecus
             // open the reader for the body frames
             bodyFrameReader = kinectSensor.BodyFrameSource.OpenReader();
 
-	        // populate body colors, one for each BodyIndex
+            // populate body colors, one for each BodyIndex
             bodyColors = new List<Pen>
             {
 	            new Pen(Brushes.Red, 6),
@@ -161,7 +164,7 @@ namespace EhT.Intrinsecus
 	            new Pen(Brushes.Violet, 6)
             };
 
-	        // set IsAvailableChanged event notifier
+            // set IsAvailableChanged event notifier
             kinectSensor.IsAvailableChanged += Sensor_IsAvailableChanged;
 
             // open the sensor
@@ -175,6 +178,9 @@ namespace EhT.Intrinsecus
 
             // use the window object as the view model in this simple example
             DataContext = this;
+
+            synth = new SpeechSynthesizer();
+            synth.SetOutputToDefaultAudioDevice();
 
             // initialize the components (controls) of the window
             InitializeComponent();
@@ -246,19 +252,19 @@ namespace EhT.Intrinsecus
 
 			if (dataReceived)
 			{
-	        using (DrawingContext dc = drawingGroup.Open())
-	        {
-		        // Draw a transparent background to set the render size
-		        dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
+            using (DrawingContext dc = drawingGroup.Open())
+            {
+                // Draw a transparent background to set the render size
+                dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
 
-		        int penIndex = 0;
-		        foreach (Body body in bodies)
-		        {
-			        Pen drawPen = bodyColors[penIndex++];
+                int penIndex = 0;
+                foreach (Body body in bodies)
+                {
+                    Pen drawPen = bodyColors[penIndex++];
 
 						if (body.IsTracked)
 						{
-			        DrawClippedEdges(body, dc);
+                    DrawClippedEdges(body, dc);
 
 							IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
 
@@ -271,52 +277,39 @@ namespace EhT.Intrinsecus
 								// clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
 								CameraSpacePoint position = joints[jointType].Position;
 								if (position.Z < 0)
-			        {
+                    {
 									position.Z = InferredZPositionClamp;
-			        }
+                    }
 
 								DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
 								jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
-		        }
+                }
 
 							DrawBody(joints, jointPoints, dc, drawPen);
 
 							DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
 							DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
 						}
-		        }
+                }
 
-		        // prevent drawing outside of our render area
-		        drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
-	        }
+                // prevent drawing outside of our render area
+                drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
+            }
         }
 		}
 
         public void setCurrentExcersize(IExercise e)
         {
             currentExercise = e;
+            synth.SpeakAsync("Starting a set of " + e.getPhoneticName());
+            ExerciseLabel.Content = e.getName();
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
         {
             switch (e.command)
             {
-                case AudioCommand.BACK:
-                    break;
-                case AudioCommand.ENTER:
-                    break;
-                case AudioCommand.SQUAT:
-                    ExerciseLabel.Content = "Squat";
-                    break;
-                case AudioCommand.DEADLIFT:
-                    ExerciseLabel.Content = "Deadlift";
-                    break;
-                case AudioCommand.LUNGES:
-                    ExerciseLabel.Content = "Lunges";
-                    break;
-                case AudioCommand.SHOULDERPRESS:
-                    ExerciseLabel.Content = "Shoulder Press";
-                    break;
+                // not implemented BACK, ENTER, SQUAT, DEADLIFT, LUNGES, SHOULDERPRESS
                 case AudioCommand.SELECT:
                     new SelectionDialogue(this).Show();
                     break;
@@ -399,9 +392,9 @@ namespace EhT.Intrinsecus
 		/// <param name="handPosition">position of the hand</param>
 		/// <param name="drawingContext">drawing context to draw to</param>
 		private void DrawHand(HandState handState, Point handPosition, DrawingContext drawingContext)
-			{
+            {
 			switch (handState)
-			{
+            {
 				case HandState.Closed:
 					drawingContext.DrawEllipse(handClosedBrush, null, handPosition, HandSize, HandSize);
 					break;
@@ -466,7 +459,7 @@ namespace EhT.Intrinsecus
         private void Sensor_IsAvailableChanged(object sender, IsAvailableChangedEventArgs e)
         {
             // on failure, set the status text
-			StatusLabel.Content = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
+            StatusLabel.Content = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
                                                             : Properties.Resources.SensorNotAvailableStatusText;
         }
 
