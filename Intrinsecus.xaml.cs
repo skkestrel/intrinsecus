@@ -48,6 +48,7 @@ namespace EhT.Intrinsecus
 
         /// <summary>
         /// Speech recognition engine using audio data from Kinect.
+        /// #JUSTHACKATHONTHINGS making what should be a private variable public
         /// </summary>
         public AudioSpeechEngine speechEngine;
 
@@ -240,6 +241,11 @@ namespace EhT.Intrinsecus
                 // prevent drawing outside of our render area
                 drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
             }
+        }
+
+        public void setCurrentExcersize(IExercise e)
+        {
+            currentExercise = e;
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
