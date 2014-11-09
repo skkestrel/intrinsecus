@@ -436,8 +436,7 @@ namespace EhT.Intrinsecus
                         SingletonSelectionDialogue = new SelectionDialogue(this);
                         SingletonSelectionDialogue.Show();
                     }
-                    else
-                        SingletonSelectionDialogue.Show();
+        
                         break;
 			}
 		}
