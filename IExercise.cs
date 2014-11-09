@@ -13,7 +13,7 @@ namespace EhT.Intrinsecus
 		/// <param name="intrinsecus"></param>
 		/// <returns>the number of reps completed</returns>returns>
 		int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus);
-
+            
         string GetName();
 
         string GetPhoneticName();

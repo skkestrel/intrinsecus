@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Media;
@@ -67,12 +68,12 @@ namespace EhT.Intrinsecus
 		/// <summary>
 		/// Reader for body frames
 		/// </summary>
-		private BodyFrameReader bodyFrameReader;
+		private readonly BodyFrameReader bodyFrameReader;
 
 		/// <summary>
 		/// color frame reader
 		/// </summary>
-		private ColorFrameReader colorFrameReader;
+		private readonly ColorFrameReader colorFrameReader;
 
 		/// <summary>
 		/// Array for the bodies
@@ -97,7 +98,7 @@ namespace EhT.Intrinsecus
 		/// <summary>
 		/// synth
 		/// </summary>
-		private SpeechSynthesizer synth;
+		private readonly SpeechSynthesizer synth;
 
 		/// <summary>
 		/// the current exercise in play
@@ -112,27 +113,27 @@ namespace EhT.Intrinsecus
 		/// <summary>
 		/// color bitmap
 		/// </summary>
-		private WriteableBitmap colorBitmap;
+		private readonly WriteableBitmap colorBitmap;
 
 		/// <summary>
 		/// brush for closed hand
 		/// </summary>
-		private readonly Brush handClosedBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0));
+		private readonly Brush handClosedBrush = new SolidColorBrush(Color.FromArgb(0, 255, 0, 0));
 
 		/// <summary>
 		/// Brush used for drawing hands that are currently tracked as opened
 		/// </summary>
-		private readonly Brush handOpenBrush = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
+		private readonly Brush handOpenBrush = new SolidColorBrush(Color.FromArgb(0, 0, 255, 0));
 
 		/// <summary>
 		/// Brush used for drawing hands that are currently tracked as in lasso (pointer) position
 		/// </summary>
-		private readonly Brush handLassoBrush = new SolidColorBrush(Color.FromArgb(128, 0, 0, 255));
+		private readonly Brush handLassoBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 255));
 
 		/// <summary>
 		/// Brush used for drawing joints that are currently tracked
 		/// </summary>
-		private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
+		private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255));
 
 		/// <summary>
 		/// Brush used for drawing joints that are currently inferred
@@ -175,12 +176,20 @@ namespace EhT.Intrinsecus
 			// populate body colors, one for each BodyIndex
 			bodyColors = new List<Pen>
             {
+				/*
 	            new Pen(Brushes.Red, 6),
 	            new Pen(Brushes.Orange, 6),
 	            new Pen(Brushes.Green, 6),
 	            new Pen(Brushes.Blue, 6),
 	            new Pen(Brushes.Indigo, 6),
 	            new Pen(Brushes.Violet, 6)
+				*/
+	            new Pen(new SolidColorBrush(Color.FromArgb(100, 255, 0, 0)), 6),
+	            new Pen(new SolidColorBrush(Color.FromArgb(100, 255, 255, 0)), 6),
+	            new Pen(new SolidColorBrush(Color.FromArgb(100, 0, 255, 0)), 6),
+	            new Pen(new SolidColorBrush(Color.FromArgb(100, 0, 255, 255)), 6),
+	            new Pen(new SolidColorBrush(Color.FromArgb(100, 0, 0, 255)), 6),
+	            new Pen(new SolidColorBrush(Color.FromArgb(100, 255, 0, 255)), 6),
             };
 
 			// set IsAvailableChanged event notifier
@@ -236,7 +245,11 @@ namespace EhT.Intrinsecus
 			{
 				// BodyFrameReader is IDisposable
 				bodyFrameReader.Dispose();
-				bodyFrameReader = null;
+			}
+
+			if (colorFrameReader != null)
+			{
+				colorFrameReader.Dispose();
 			}
 
 			if (kinectSensor != null)
@@ -279,15 +292,10 @@ namespace EhT.Intrinsecus
 				// Draw a transparent background to set the render size
 				dc.DrawRectangle(Brushes.Transparent, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
 
-				float ratio = 0.325f;
-				int offsetX = 12;
-				int offsetY = 16;
+				const float ratio = 0.325f;
+				const int offsetX = 12;
+				const int offsetY = 16;
 
-				/*
-				dc.DrawImage(colorBitmap,
-					new Rect(-(colorBitmap.PixelWidth * (float) displayHeight / colorBitmap.PixelHeight - displayWidth) / 2, 0,
-						colorBitmap.PixelWidth * (float) displayHeight / colorBitmap.PixelHeight, displayHeight));
-				*/
 				dc.DrawImage(colorBitmap,
 					new Rect(-(colorBitmap.PixelWidth * ratio - displayWidth)/2 - offsetX, -(colorBitmap.PixelHeight * ratio - displayHeight)/2 - offsetY,
 						colorBitmap.PixelWidth * ratio, colorBitmap.PixelHeight * ratio));
@@ -325,12 +333,13 @@ namespace EhT.Intrinsecus
 						DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
 						DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
 
-						if (CurrentExercise != null)
+						if (CurrentExercise == null) continue;
+
+						int t = CurrentExercise.Update(body, dc, this);
+						RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture);
+						if (t >= targetReps)
 						{
-							int t = CurrentExercise.Update(body, dc, this);
-							RepCountLabel.Content = t.ToString();
-							if (t >= targetReps)
-								CurrentExercise = null;
+							SetExercise(null);
 						}
 					}
 				}
@@ -352,25 +361,25 @@ namespace EhT.Intrinsecus
             {
                 if (colorFrame != null)
                 {
-                    FrameDescription colorFrameDescription = colorFrame.FrameDescription;
+	                FrameDescription colorFrameDescription = colorFrame.FrameDescription;
 
-                    using (KinectBuffer colorBuffer = colorFrame.LockRawImageBuffer())
-                    {
-                        colorBitmap.Lock();
+	                using (colorFrame.LockRawImageBuffer())
+	                {
+		                colorBitmap.Lock();
 
-                        // verify data and write the new color frame data to the display bitmap
-                        if ((colorFrameDescription.Width == colorBitmap.PixelWidth) && (colorFrameDescription.Height == colorBitmap.PixelHeight))
-                        {
-                            colorFrame.CopyConvertedFrameDataToIntPtr(
-                                colorBitmap.BackBuffer,
-                                (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
-                                ColorImageFormat.Bgra);
+		                // verify data and write the new color frame data to the display bitmap
+		                if ((colorFrameDescription.Width == colorBitmap.PixelWidth) && (colorFrameDescription.Height == colorBitmap.PixelHeight))
+		                {
+			                colorFrame.CopyConvertedFrameDataToIntPtr(
+				                colorBitmap.BackBuffer,
+				                (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
+				                ColorImageFormat.Bgra);
 
-                            colorBitmap.AddDirtyRect(new Int32Rect(0, 0, colorBitmap.PixelWidth, colorBitmap.PixelHeight));
-                        }
+			                colorBitmap.AddDirtyRect(new Int32Rect(0, 0, colorBitmap.PixelWidth, colorBitmap.PixelHeight));
+		                }
 
-                        colorBitmap.Unlock();
-                    }
+		                colorBitmap.Unlock();
+	                }
                 }
             }
         }
@@ -378,8 +387,16 @@ namespace EhT.Intrinsecus
 		public void SetExercise(IExercise e)
 		{
 			CurrentExercise = e;
-			synth.SpeakAsync("Starting a set of " + e.GetPhoneticName());
-			ExerciseLabel.Content = e.GetName();
+			if (CurrentExercise != null)
+			{
+				synth.SpeakAsync("Starting a set of " + CurrentExercise.GetPhoneticName());
+				ExerciseLabel.Content = CurrentExercise.GetName();
+			}
+			else
+			{
+				synth.SpeakAsync("Exercise finished");
+				ExerciseLabel.Content = "None";
+			}
 		}
 
 		void AudioCommandReceived(object sender, AudioCommandEventArgs e)
