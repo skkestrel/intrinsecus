@@ -35,9 +35,9 @@ namespace EhT.Intrinsecus
             if (speechFlag == true)
             {
                 if (reps == 5) intrinsecus.synth.SpeakAsync("Only five left, you can do it!");
-                if (reps == 3) intrinsecus.synth.SpeakAsync("Three left, almost there!");
-                if (reps == 1) intrinsecus.synth.SpeakAsync("One left...");
-                if (reps == 0) intrinsecus.synth.SpeakAsync("You did your squats! Congratulations!");
+                if (reps == 7) intrinsecus.synth.SpeakAsync("Three left, almost there!");
+                if (reps == 9) intrinsecus.synth.SpeakAsync("One left...");
+                if (reps == 10) intrinsecus.synth.SpeakAsync("You did your squats! Congratulations!");
                 speechFlag = false;
             }
             
