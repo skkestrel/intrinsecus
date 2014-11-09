@@ -47,7 +47,7 @@ namespace EhT.Intrinsecus
                     state = Transition.DownToUp;
                 }
             }
-            else if ((leftAngle > 130) && (rightAngle > 130))
+            else if ((leftAngle > 130) && (rightAngle > 130) && (leftShoulder.Y < leftElbow.Y) && (rightShoulder.Y < rightElbow.Y))
             {
                 if (state == Transition.DownToUp)
                 {
