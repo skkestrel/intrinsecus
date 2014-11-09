@@ -4,7 +4,7 @@
         Title="Body Basics" 
         Height="768" Width="1024" 
         Loaded="IntrinsecusWindow_Loaded"
-        Closing="MainWindow_Closing" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Closing="IntrinsecusWindow_Closing" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
 	<Window.Resources>
 		<SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e" />
 		<SolidColorBrush x:Key="KinectPurpleBrush" Color="#ff52318f" />
@@ -31,7 +31,7 @@
 		<Label x:Name="IntrinsecusLabel" Content="Intrinsecus" Margin="10" Grid.Row="0" Grid.ColumnSpan="2" Grid.Column="0"
 		       FontSize="72"/>
 		<Button x:Name="SelectionDialogueButton" Content="Selection" Grid.Row="0" Grid.Column="1" Margin="10" Click="SelectionDialogueButton_Click" FontSize="48"/>
-		<Label x:Name="RepCountLabel" Content="Label" Grid.Column="1" Margin="10" Grid.Row="3" Grid.RowSpan="2"/>
-		<Label x:Name="StatusLabel" Content="Label" Margin="0" Grid.Row="4" Grid.Column="0" />
+		<Label x:Name="RepCountLabel" Content="Reps" Grid.Column="1" Margin="10" Grid.Row="3" Grid.RowSpan="2"/>
+		<Label x:Name="StatusLabel" Content="Status" Margin="0" Grid.Row="4" Grid.Column="0" />
 	</Grid>
 </Window>

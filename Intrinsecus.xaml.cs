@@ -208,7 +208,7 @@ namespace EhT.Intrinsecus
 		/// </summary>
 		/// <param name="sender">object sending the event</param>
 		/// <param name="e">event arguments</param>
-		private void MainWindow_Closing(object sender, CancelEventArgs e)
+        private void IntrinsecusWindow_Closing(object sender, CancelEventArgs e)
 		{
 			if (bodyFrameReader != null)
 			{
