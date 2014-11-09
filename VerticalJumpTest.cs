@@ -89,6 +89,7 @@ namespace EhT.Intrinsecus
                 {
                     highestJump = prevY[2] - startingY;
                     jumpDetected = false;
+                    reps++;
                     intrinsecus.InstructionLabel.Content = "Jumped - " + highestJump + "m";
                 }
             }
@@ -108,7 +109,7 @@ namespace EhT.Intrinsecus
 
         public string GetPhoneticName()
         {
-            return "lateral fly";
+            return "Vertical Jump Test";
         }
     }
 }
