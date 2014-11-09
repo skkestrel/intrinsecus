@@ -109,7 +109,7 @@ namespace EhT.Intrinsecus
 
         private void StartLateralFly()
         {
-            this.parent.SetExercise(new LateralFly(), reps);
+            this.parent.SetExercise(new LateralFly(reps), reps);
             this.Close();
         }
 
