@@ -87,7 +87,7 @@ namespace EhT.Intrinsecus
 
         private void StartJumpingJacks()
         {
-            this.parent.SetExercise(new JumpingJacks(), reps);
+            this.parent.SetExercise(new JumpingJacks(reps), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }
