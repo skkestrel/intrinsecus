@@ -10,9 +10,9 @@ namespace EhT.Intrinsecus
 {
     class LateralFly : IExercise
     {
-        private Transition state = Transition.DownToUp;
-        private int reps = 0;
-        private int repFlashTicks = 4;
+        private Transition state;
+        private int reps;
+        private int repFlashTicks;
         private int targetReps;
 
         enum Transition
@@ -25,6 +25,8 @@ namespace EhT.Intrinsecus
         {
             state = Transition.DownToUp;
             reps = 0;
+            repFlashTicks = 4;
+            state = Transition.DownToUp;
             this.targetReps = tarReps;
         }
 
