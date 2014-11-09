@@ -14,6 +14,7 @@ namespace EhT.Intrinsecus
         private int reps;
         private int repFlashTicks;
         private int targetReps;
+        private Intrinsecus parent;
 
         enum Transition
         {
@@ -21,13 +22,25 @@ namespace EhT.Intrinsecus
             DownToUp,
         }
 
-        public LateralFly(int tarReps)
+        public LateralFly(int tarReps, Intrinsecus parent)
         {
+            parent.synth.SpeakAsync("Starting a set of " + GetPhoneticName());
+            parent.InstructionLabel.Content = "None";
+            parent.ExerciseLabel.Content = GetName();
+            this.parent = parent;
+
             state = Transition.DownToUp;
             reps = 0;
             repFlashTicks = 4;
             state = Transition.DownToUp;
             this.targetReps = tarReps;
+        }
+
+        ~LateralFly()
+        {
+			parent.synth.SpeakAsync("Exercise finished");
+			parent.InstructionLabel.Content = "None";
+			parent.ExerciseLabel.Content = "None";
         }
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)

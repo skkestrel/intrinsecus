@@ -38,7 +38,7 @@ namespace EhT.Intrinsecus
 
         private void StartSquats()
         {
-            this.parent.SetExercise(new Squat(reps), reps);
+            this.parent.SetExercise(new Squat(reps, parent), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }
@@ -63,7 +63,7 @@ namespace EhT.Intrinsecus
 
         private void StartShoulderPresses()
         {
-            this.parent.SetExercise(new ShoulderPresses(reps), reps);
+            this.parent.SetExercise(new ShoulderPresses(reps, parent), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
 
@@ -76,7 +76,7 @@ namespace EhT.Intrinsecus
 
         private void StartSplitLegLunges()
         {
-            this.parent.SetExercise(new SplitLegLunges(reps), reps);
+            this.parent.SetExercise(new SplitLegLunges(reps, parent), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }
@@ -88,7 +88,7 @@ namespace EhT.Intrinsecus
 
         private void StartJumpingJacks()
         {
-            this.parent.SetExercise(new JumpingJacks(reps), reps);
+            this.parent.SetExercise(new JumpingJacks(reps, parent), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }
@@ -100,7 +100,7 @@ namespace EhT.Intrinsecus
 
         private void StartVerticalJump()
         {
-            this.parent.SetExercise(new VerticalJumpTest(reps), reps);
+            this.parent.SetExercise(new VerticalJumpTest(reps, parent), reps);
             this.Close();
         }
         private void LateralFlyButton_Click(object sender, RoutedEventArgs e)
@@ -110,7 +110,7 @@ namespace EhT.Intrinsecus
 
         private void StartLateralFly()
         {
-            this.parent.SetExercise(new LateralFly(reps), reps);
+            this.parent.SetExercise(new LateralFly(reps, parent), reps);
             this.Close();
         }
 

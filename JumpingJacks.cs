@@ -9,12 +9,25 @@ namespace EhT.Intrinsecus
         private int reps;
         private double prevGroin;
         private int targetReps;
+        private Intrinsecus parent;
 
-        public JumpingJacks(int tarReps)
+        public JumpingJacks(int tarReps, Intrinsecus parent)
         {
+            parent.synth.SpeakAsync("Starting a set of " + GetPhoneticName());
+            parent.InstructionLabel.Content = "None";
+            parent.ExerciseLabel.Content = GetName();
+            this.parent = parent;
+
             reps = 0;
             state = Transition.DOWNTOUP;
             this.targetReps = tarReps;
+        }
+
+        ~JumpingJacks()
+        {
+			parent.synth.SpeakAsync("Exercise finished");
+			parent.InstructionLabel.Content = "None";
+			parent.ExerciseLabel.Content = "None";
         }
 
         enum Transition

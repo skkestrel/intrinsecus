@@ -14,6 +14,7 @@ namespace EhT.Intrinsecus
         private int reps;
         private int targetReps;
         private int repFlashTicks;
+        private Intrinsecus parent;
 
         enum Transition
         {
@@ -21,13 +22,25 @@ namespace EhT.Intrinsecus
             DownToUp,
         }
 
-        public SplitLegLunges(int tarReps)
+        public SplitLegLunges(int tarReps, Intrinsecus parent)
 		{
+            parent.synth.SpeakAsync("Starting a set of " + GetPhoneticName());
+            parent.InstructionLabel.Content = "None";
+            parent.ExerciseLabel.Content = GetName();
+            this.parent = parent;
+
             state = Transition.UpToDown;
             reps = 0;
             repFlashTicks = 4;
             this.targetReps = tarReps;
 		}
+
+        ~SplitLegLunges()
+        {
+			parent.synth.SpeakAsync("Exercise finished");
+			parent.InstructionLabel.Content = "None";
+			parent.ExerciseLabel.Content = "None";
+        }
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
