@@ -120,9 +120,11 @@ namespace EhT.Intrinsecus
             {
                 if (body.IsTracked)
                 {
-                    reps = (int) Math.Abs(body.Joints[JointType.HandLeft].Position.Y - body.Joints[JointType.HandRight].Position.Y) * 50;
+                    reps = (int) (Math.Abs(body.Joints[JointType.HandLeft].Position.Y - body.Joints[JointType.HandRight].Position.Y) * 50);
                 }
             }
+
+            this.RepTextBox.Text = reps.ToString();
             
         }
 

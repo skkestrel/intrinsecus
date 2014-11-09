@@ -78,7 +78,7 @@
       <tag> REPSET </tag>
       <one-of>
         <item> set number of reps</item>
-        <item> rep set </item>
+        <item> reps </item>
         <item> set reps </item>
       </one-of>
     </item>
