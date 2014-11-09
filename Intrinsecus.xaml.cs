@@ -436,11 +436,7 @@ namespace EhT.Intrinsecus
 			{
 				// not implemented BACK, ENTER, SQUAT, DEADLIFT, LUNGES, SHOULDERPRESS
 				case AudioCommand.SELECT:
-					if (SingletonSelectionDialogue == null)
-					{
-						SingletonSelectionDialogue = new SelectionDialogue(this);
-						SingletonSelectionDialogue.Show();
-					}
+                    SelectionDialogueButton_Click(null, null);
 
 					break;
 			}
@@ -595,7 +591,11 @@ namespace EhT.Intrinsecus
 
 		private void SelectionDialogueButton_Click(object sender, RoutedEventArgs e)
 		{
-			new SelectionDialogue(this).Show();
+            if (SingletonSelectionDialogue == null)
+            {
+                SingletonSelectionDialogue = new SelectionDialogue(this);
+                SingletonSelectionDialogue.Show();
+            }
 		}
 	}
 }

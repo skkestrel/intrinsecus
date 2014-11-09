@@ -62,7 +62,7 @@ namespace EhT.Intrinsecus
             }
             
             
-            if ((leftAngle < 120) && (rightAngle < 120))
+            if ((leftAngle < 130) && (rightAngle < 130))
             {
                 if (state == Transition.UpToDown)
                 {
