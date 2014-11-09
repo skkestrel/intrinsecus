@@ -16,6 +16,11 @@ namespace EhT.Intrinsecus
         /// </summary>
         public ImageSource ImageSource { get; private set; }
 
+		/// <summary>
+		/// the target of reps
+		/// </summary>
+		private int targetReps = 10;
+
         /// <summary>
         /// Thickness of clip edge rectangles
         /// </summary>
@@ -75,6 +80,11 @@ namespace EhT.Intrinsecus
         /// List of colors for each body tracked
         /// </summary>
         private readonly List<Pen> bodyColors;
+
+		/// <summary>
+		/// the current exercise in play
+		/// </summary>
+		private IExercise currentExercise;
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -220,6 +230,11 @@ namespace EhT.Intrinsecus
 			        }
 
 			        DrawBody(dc, drawPen);
+		        }
+
+		        if (currentExercise.Update(dc) >= targetReps)
+		        {
+			        currentExercise = null;
 		        }
 
 		        // prevent drawing outside of our render area
