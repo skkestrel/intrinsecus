@@ -31,7 +31,10 @@ namespace EhT.Intrinsecus
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
-            intrinsecus.InstructionLabel.Content = "Alternate left and right foot forward champ!";
+            if (reps == 0)
+            {
+                intrinsecus.InstructionLabel.Content = "Alternate left and right foot forward champ!";
+            }
           
             CameraSpacePoint leftAnkle = body.Joints[JointType.AnkleLeft].Position;
             CameraSpacePoint leftKnee = body.Joints[JointType.KneeLeft].Position;
@@ -60,7 +63,7 @@ namespace EhT.Intrinsecus
             }
             else if ((leftLegAngle < 100) || (rightLegAngle < 100))
             {
-                if ((leanL < 70) || (leanL > 110))
+                if ((leanL < 60) || (leanL > 120))
                 {
                     intrinsecus.InstructionLabel.Content = "Don't lean!";
                 }

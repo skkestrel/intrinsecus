@@ -7,6 +7,7 @@ namespace EhT.Intrinsecus
     {
         private Transition state = Transition.DOWNTOUP;
         private int reps = 0;
+        private double prevGroin;
         private int targetReps;
 
 /*        public void JumpingJacks(int tarReps)
@@ -32,10 +33,11 @@ namespace EhT.Intrinsecus
                 if (state == Transition.UPTODOWN)
                 {
                     reps++;
+                    intrinsecus.InstructionLabel.Content = "Great Jumping Jack, Bro!";
                     state = Transition.DOWNTOUP;
                 }
             }
-            else if ((groin > 60) && (aRight > 150) && (aLeft > 150))
+            else if ((groin > 50) && (aRight > 150) && (aLeft > 150))
             {
                 if (state == Transition.DOWNTOUP)
                 {
@@ -43,6 +45,13 @@ namespace EhT.Intrinsecus
 
                 }
             }                   
+            else if ((prevGroin > groin) && (state == Transition.DOWNTOUP))
+            {
+                intrinsecus.InstructionLabel.Content = "Make a bigger star, bro!";
+            }
+
+            prevGroin = groin;
+
             return reps;
         }
 
