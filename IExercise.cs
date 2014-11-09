@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
 {
@@ -11,10 +7,9 @@ namespace EhT.Intrinsecus
 		/// <summary>
 		/// update the exercise status
 		/// </summary>
+		/// <param name="body">the body to update for</param>
 		/// <param name="ctx">the drawing context for the viewbox</param>
 		/// <returns>the number of reps completed</returns>returns>
-        int Update(System.Windows.Media.DrawingContext ctx);
+		int Update(Body body, System.Windows.Media.DrawingContext ctx);
     }
-
-
 }
