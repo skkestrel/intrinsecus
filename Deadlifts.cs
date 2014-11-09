@@ -73,6 +73,11 @@ namespace EhT.Intrinsecus
             return 0;
         }
 
+        public int GetTargetReps()
+        {
+            return 10;
+        }
+
         private bool TorsoStraight()
         {
             return true;

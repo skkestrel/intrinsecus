@@ -15,6 +15,11 @@ namespace EhT.Intrinsecus
             return 0;
         }
 
+        public int GetTargetReps()
+        {
+            return 20;
+        }
+
         public string GetName()
         {
             return "Split Leg Lunge";

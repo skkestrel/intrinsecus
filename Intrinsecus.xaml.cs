@@ -31,11 +31,6 @@ namespace EhT.Intrinsecus
 		private const float InferredZPositionClamp = 0.1f;
 
 		/// <summary>
-		/// the target of reps
-		/// </summary>
-		private int targetReps = 10;
-
-		/// <summary>
 		/// Thickness of clip edge rectangles
 		/// </summary>
 		private const double ClipBoundsThickness = 10;
@@ -345,9 +340,8 @@ namespace EhT.Intrinsecus
 						}
 
 						int t = CurrentExercise.Update(body, dc, this);
-						RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/" +
-												targetReps.ToString(CultureInfo.InvariantCulture);
-						if (t >= targetReps)
+                        RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/" + CurrentExercise.GetTargetReps();
+                        if (t >= CurrentExercise.GetTargetReps())
 						{
 							SetExercise(null);
 						}

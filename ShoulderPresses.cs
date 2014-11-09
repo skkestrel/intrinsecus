@@ -12,6 +12,7 @@ namespace EhT.Intrinsecus
     {
         private Transition state = Transition.DOWNTOUP;
         private int reps = 0;
+        private int repFlashTicks = 4;
 
         enum Transition
         {
@@ -51,12 +52,30 @@ namespace EhT.Intrinsecus
                 if (state == Transition.DOWNTOUP)
                 {
                     state = Transition.UPTODOWN;
-
+                    repFlashTicks = 0;
                 }
             }
-            return reps;
+
+            if (repFlashTicks++ <= 3)
+            {
+                Pen highlightPen = new Pen(Brushes.Green, 10);
+
+                ctx.DrawLine(highlightPen, intrinsecus.CameraToScreen(body.Joints[JointType.ShoulderLeft].Position), 
+                    intrinsecus.CameraToScreen(body.Joints[JointType.ElbowLeft].Position));
+                ctx.DrawLine(highlightPen, intrinsecus.CameraToScreen(body.Joints[JointType.ElbowLeft].Position),
+                    intrinsecus.CameraToScreen(body.Joints[JointType.WristLeft].Position));
+                ctx.DrawLine(highlightPen, intrinsecus.CameraToScreen(body.Joints[JointType.ShoulderRight].Position),
+                    intrinsecus.CameraToScreen(body.Joints[JointType.ElbowRight].Position));
+                ctx.DrawLine(highlightPen, intrinsecus.CameraToScreen(body.Joints[JointType.ElbowRight].Position),
+                    intrinsecus.CameraToScreen(body.Joints[JointType.WristRight].Position));
+            }
 
             return reps;
+        }
+
+        public int GetTargetReps()
+        {
+            return 10;
         }
 
         public string GetName()

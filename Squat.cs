@@ -87,6 +87,11 @@ namespace EhT.Intrinsecus
 			return reps;
 		}
 
+        public int GetTargetReps()
+        {
+            return 10;
+        }
+
 		public string GetName()
 		{
 			return "Squat";
