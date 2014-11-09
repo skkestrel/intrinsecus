@@ -12,6 +12,7 @@ namespace EhT.Intrinsecus
 
         private Intrinsecus parent;
         private int reps;
+        bool repflag;
 
         public SelectionDialogue(Intrinsecus parent)
         {
@@ -21,6 +22,7 @@ namespace EhT.Intrinsecus
             this.parent.SpeechEngine.CommandRecieved += AudioCommandReceived;
             
             InitializeComponent();
+            repflag = false;
         }
 
          ~SelectionDialogue()
@@ -125,6 +127,7 @@ namespace EhT.Intrinsecus
             }
 
             this.RepTextBox.Text = "The Rep you entered is " + reps.ToString();
+            repflag = true;
             
         }
 
@@ -140,9 +143,10 @@ namespace EhT.Intrinsecus
                     tempReps = (int)(Math.Abs(body.Joints[JointType.HandLeft].Position.Y - body.Joints[JointType.HandRight].Position.Y) * 50);
                 }
             }
-
-            this.RepTextBox.Text = tempReps.ToString();
-            
+            if (repflag)
+            {
+                this.RepTextBox.Text = tempReps.ToString();
+            }
 
         }
 
