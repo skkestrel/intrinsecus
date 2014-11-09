@@ -68,5 +68,59 @@
         <item> set reps </item>
       </one-of>
     </item>
+    <item>
+      <tag> ONE </tag>
+      <one-of>
+        <item> one </item>
+      </one-of>
+    </item>
+    <item>
+      <tag> THREE </tag>
+      <one-of>
+        <item> three </item>
+      </one-of>
+    </item>
+    <item>
+      <tag> FOUR </tag>
+      <one-of>
+        <item> four </item>
+      </one-of>
+    </item>
+    <item>
+      <tag> FIVE </tag>
+      <one-of>
+        <item> five </item>
+      </one-of>
+    </item>
+    <item>
+      <tag> SIX </tag>
+      <one-of>
+        <item> six </item>
+      </one-of>
+    </item>
+    <item>
+      <tag> SEVEN </tag>
+      <one-of>
+        <item> seven </item>
+      </one-of>
+    </item>
+    <item>
+      <tag> EIGHT </tag>
+      <one-of>
+        <item> eight </item>
+      </one-of>
+    </item>
+    <item>
+      <tag> NINE </tag>
+      <one-of>
+        <item> nine </item>
+      </one-of>
+    </item>
+    <item>
+      <tag> TEN </tag>
+      <one-of>
+        <item> ten </item>
+      </one-of>
+    </item>
   </rule>
 </grammar>
