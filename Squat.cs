@@ -36,16 +36,6 @@ namespace EhT.Intrinsecus
             this.speechFlag = true;
 		}
 
-        ~Squat()
-        {
-            Dispose();
-        }
-
-        public void Dispose()
-        {
-            parent.synth.SpeakAsync("Exercise finished");
-        }
-
 		public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
             if (speechFlag == true)

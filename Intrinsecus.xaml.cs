@@ -365,6 +365,7 @@ namespace EhT.Intrinsecus
 							+ CurrentExercise.GetTargetReps().ToString(CultureInfo.InvariantCulture);
 						if (t >= CurrentExercise.GetTargetReps())
 						{
+                            synth.SpeakAsync("Exercise finished");
                             SetExercise(null);
                             InstructionLabel.Content = "None";
                             ExerciseLabel.Content = "None";
