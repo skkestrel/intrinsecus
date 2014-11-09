@@ -268,6 +268,9 @@ namespace EhT.Intrinsecus
                 case AudioCommand.SHOULDERPRESS:
                     ExerciseLabel.Content = "Shoulder Press";
                     break;
+                case AudioCommand.SELECT:
+                    new SelectionDialogue(this).Show();
+                    break;
             }
         }
 

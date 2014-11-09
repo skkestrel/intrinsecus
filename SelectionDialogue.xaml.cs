@@ -70,7 +70,6 @@ namespace EhT.Intrinsecus
         {
             this.parent.setCurrentExcersize(new SplitLegLunges());
             this.Close();
-
         }
 
 		private void JumpingJacksButton_Click(object sender, RoutedEventArgs e)
@@ -80,7 +79,8 @@ namespace EhT.Intrinsecus
 
         private void StartJumpingJacks()
         {
-
+            this.parent.setCurrentExcersize(new JumpingJacks());
+            this.Close();
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
@@ -88,6 +88,7 @@ namespace EhT.Intrinsecus
             switch (e.command)
             {
                 case AudioCommand.BACK:
+                    this.Close();
                     break;
                 case AudioCommand.ENTER:
                     break;
