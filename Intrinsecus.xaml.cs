@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Kinect;
+using Microsoft.Speech.AudioFormat;
+using Microsoft.Speech.Recognition;
 
 namespace EhT.Intrinsecus
 {
@@ -77,6 +79,11 @@ namespace EhT.Intrinsecus
         /// </summary>
         private KinectSensor kinectSensor;
 
+        /// <summary>
+        /// Speech recognition engine using audio data from Kinect.
+        /// </summary>
+        private AudioSpeechEngine speechEngine = null;
+
 		/// <summary>
 		/// Coordinate mapper to map one type of point to another
 		/// </summary>
@@ -134,6 +141,12 @@ namespace EhT.Intrinsecus
             // get size of joint space
             displayWidth = frameDescription.Width;
             displayHeight = frameDescription.Height;
+
+            if (kinectSensor != null)
+            {
+                this.speechEngine = new AudioSpeechEngine(kinectSensor);
+                this.speechEngine.CommandRecieved += AudioCommandReceived;
+            }
 
             // open the reader for the body frames
             bodyFrameReader = kinectSensor.BodyFrameSource.OpenReader();
@@ -345,6 +358,11 @@ namespace EhT.Intrinsecus
 		        // prevent drawing outside of our render area
 		        drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
 	        }
+        }
+
+        void AudioCommandReceived(object sender, AudioCommandEventArgs e)
+        {
+
         }
 
         /// <summary>
