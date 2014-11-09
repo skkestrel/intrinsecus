@@ -25,6 +25,7 @@ namespace EhT.Intrinsecus
 
 			float HipKnee = HipPoint - KneePoint;
 
+            // y dimension logic up
 			if (HipKnee > 0.10)
 			{
 				if (repComplete)
@@ -33,11 +34,18 @@ namespace EhT.Intrinsecus
 					repComplete = false;
 				}
 			}
+            // y dimension logic down
 			else if (HipKnee < 0.05)
 			{
 				repComplete = true;
+                intrinsecus.InstructionLabel.Content = "Great squat";
 				repflashtick = 0;
 			}
+            else
+            {
+                intrinsecus.InstructionLabel.Content = "Squat form not low enough. Sit bro";
+                repComplete = false;
+            }
 
 			if (repflashtick++ <= 3)
 			{

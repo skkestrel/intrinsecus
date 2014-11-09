@@ -5,6 +5,7 @@ using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
@@ -241,8 +242,10 @@ namespace EhT.Intrinsecus
 		/// </summary>
 		/// <param name="sender">object sending the event</param>
 		/// <param name="e">event arguments</param>
-        private void IntrinsecusWindow_Closing(object sender, CancelEventArgs e)
+		private void IntrinsecusWindow_Closing(object sender, CancelEventArgs e)
 		{
+			CurrentExercise = null;
+
 			if (bodyFrameReader != null)
 			{
 				// BodyFrameReader is IDisposable
@@ -299,7 +302,7 @@ namespace EhT.Intrinsecus
 				const int offsetY = 16;
 
 				dc.DrawImage(colorBitmap,
-					new Rect(-(colorBitmap.PixelWidth * ratio - displayWidth)/2 - offsetX, -(colorBitmap.PixelHeight * ratio - displayHeight)/2 - offsetY,
+					new Rect(-(colorBitmap.PixelWidth * ratio - displayWidth) / 2 - offsetX, -(colorBitmap.PixelHeight * ratio - displayHeight) / 2 - offsetY,
 						colorBitmap.PixelWidth * ratio, colorBitmap.PixelHeight * ratio));
 
 				int penIndex = 0;
@@ -343,7 +346,7 @@ namespace EhT.Intrinsecus
 
 						int t = CurrentExercise.Update(body, dc, this);
 						RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/" +
-						                        targetReps.ToString(CultureInfo.InvariantCulture);
+												targetReps.ToString(CultureInfo.InvariantCulture);
 						if (t >= targetReps)
 						{
 							SetExercise(null);
@@ -356,40 +359,54 @@ namespace EhT.Intrinsecus
 			}
 		}
 
-        /// <summary>
-        /// Handles the color frame data arriving from the sensor
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void Reader_ColorFrameArrived(object sender, ColorFrameArrivedEventArgs e)
-        {
-            // ColorFrame is IDisposable
-            using (ColorFrame colorFrame = e.FrameReference.AcquireFrame())
-            {
-                if (colorFrame != null)
-                {
-	                FrameDescription colorFrameDescription = colorFrame.FrameDescription;
+		/// <summary>
+		/// Handles the color frame data arriving from the sensor
+		/// </summary>
+		/// <param name="sender">object sending the event</param>
+		/// <param name="e">event arguments</param>
+		private void Reader_ColorFrameArrived(object sender, ColorFrameArrivedEventArgs e)
+		{
+			// ColorFrame is IDisposable
+			using (ColorFrame colorFrame = e.FrameReference.AcquireFrame())
+			{
+				if (colorFrame != null)
+				{
+					FrameDescription colorFrameDescription = colorFrame.FrameDescription;
 
-	                using (colorFrame.LockRawImageBuffer())
-	                {
-		                colorBitmap.Lock();
+					using (colorFrame.LockRawImageBuffer())
+					{
+						colorBitmap.Lock();
 
-		                // verify data and write the new color frame data to the display bitmap
-		                if ((colorFrameDescription.Width == colorBitmap.PixelWidth) && (colorFrameDescription.Height == colorBitmap.PixelHeight))
-		                {
-			                colorFrame.CopyConvertedFrameDataToIntPtr(
-				                colorBitmap.BackBuffer,
-				                (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
-				                ColorImageFormat.Bgra);
+						// verify data and write the new color frame data to the display bitmap
+						if ((colorFrameDescription.Width == colorBitmap.PixelWidth) && (colorFrameDescription.Height == colorBitmap.PixelHeight))
+						{
+							colorFrame.CopyConvertedFrameDataToIntPtr(
+								colorBitmap.BackBuffer,
+								(uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
+								ColorImageFormat.Bgra);
 
-			                colorBitmap.AddDirtyRect(new Int32Rect(0, 0, colorBitmap.PixelWidth, colorBitmap.PixelHeight));
-		                }
+							colorBitmap.AddDirtyRect(new Int32Rect(0, 0, colorBitmap.PixelWidth, colorBitmap.PixelHeight));
+						}
 
-		                colorBitmap.Unlock();
-	                }
-                }
-            }
-        }
+						colorBitmap.Unlock();
+					}
+				}
+			}
+		}
+
+		public Point CameraToScreen(CameraSpacePoint point)
+		{
+			CameraSpacePoint position = point;
+
+			if (point.Z < 0)
+			{
+				point.Z = 0.1f;
+			}
+
+			DepthSpacePoint depthSpacePoint1 = CoordinateMapper.MapCameraPointToDepthSpace(point);
+
+			return new Point(depthSpacePoint1.X, depthSpacePoint1.Y);
+		}
 
 		public void SetExercise(IExercise e)
 		{
