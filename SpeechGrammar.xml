@@ -59,6 +59,21 @@
           <item> jumping jacks </item>
         </one-of>
       </item>
+      <item>
+        <tag>VERTICALJUMPTEST</tag>
+        <one-of>
+          <item> jump test </item>
+          <item> vertical jump </item>
+          <item> vertical jump test </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>LATERALFLY</tag>
+        <one-of>
+          <item> fly </item>
+          <item> lateral fly </item>
+        </one-of>
+      </item>
     </one-of>
     <item>
       <tag> REPSET </tag>

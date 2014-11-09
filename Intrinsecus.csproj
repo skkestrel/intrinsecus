@@ -77,10 +77,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="LateralFly.cs" />
     <Compile Include="Bone.cs" />
     <Compile Include="Deadlifts.cs" />
     <Compile Include="IExercise.cs" />
     <Compile Include="JumpingJacks.cs" />
+    <Compile Include="VerticalJumpTest.cs" />
     <Compile Include="MathUtil.cs" />
     <Compile Include="SelectionDialogue.xaml.cs">
       <DependentUpon>SelectionDialogue.xaml</DependentUpon>
@@ -141,7 +143,9 @@
     <Resource Include="Images\Status.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="SpeechGrammar.xml" />
+    <Resource Include="SpeechGrammar.xml">
+      <SubType>Designer</SubType>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

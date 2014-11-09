@@ -20,6 +20,8 @@ namespace EhT.Intrinsecus
         SHOULDERPRESS,
         SELECT,
         JUMPINGJACK,
+        VERTICALJUMP,
+        LATERALFLY,
         REPCOMMAND
     }
 
@@ -135,20 +137,24 @@ namespace EhT.Intrinsecus
             {
                 switch (e.Result.Semantics.Value.ToString())
                 {
-                    case "ENTER":
-                        args.command = AudioCommand.ENTER;
-                        break;
-
                     case "BACK":
                         args.command = AudioCommand.BACK;
                         break;
 
-                    case "SQUAT":
-                        args.command = AudioCommand.SQUAT;
-                        break;
-
                     case "DEADLIFT":
                         args.command = AudioCommand.DEADLIFT;
+                        break;
+
+                    case "ENTER":
+                        args.command = AudioCommand.ENTER;
+                        break;
+
+                    case "JUMPINGJACK":
+                        args.command = AudioCommand.JUMPINGJACK;
+                        break;
+
+                    case "LATERALFLY":
+                        args.command = AudioCommand.LATERALFLY;
                         break;
 
                     case "LUNGES":
@@ -162,8 +168,13 @@ namespace EhT.Intrinsecus
                     case "SELECT":
                         args.command = AudioCommand.SELECT;
                         break;
-                    case "JUMPINGJACK":
-                        args.command = AudioCommand.JUMPINGJACK;
+
+                    case "SQUAT":
+                        args.command = AudioCommand.SQUAT;
+                        break;
+
+                    case "VERTICALJUMPTEST":
+                        args.command = AudioCommand.VERTICALJUMP;
                         break;
                     case "REPSET":
                         args.command = AudioCommand.REPCOMMAND;

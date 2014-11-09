@@ -89,6 +89,26 @@ namespace EhT.Intrinsecus
             this.parent.SingletonSelectionDialogue = null;
         }
 
+        private void VerticalJumpButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartVerticalJump();
+        }
+
+        private void StartVerticalJump()
+        {
+            this.parent.SetExercise(new VerticalJumpTest());
+            this.Close();
+        }
+        private void LateralFlyButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartLateralFly();
+        }
+
+        private void StartLateralFly()
+        {
+            this.parent.SetExercise(new LateralFly());
+            this.Close();
+        }
         private void SetRepsButton_Click(object sender, RoutedEventArgs e)
         {
             SetReps();
@@ -104,27 +124,31 @@ namespace EhT.Intrinsecus
         {
             switch (e.command)
             {
-                // not implemented ENTER
+                // not implemented ENTER, SELECT
                 case AudioCommand.BACK:
                     this.Close();
                     this.parent.SingletonSelectionDialogue = null;
                     break;
-                case AudioCommand.SQUAT:
-                    StartSquats();
-                    break;
                 case AudioCommand.DEADLIFT:
                     StartDeadlifts();
-                    break;
-                case AudioCommand.LUNGES:
-                    StartSplitLegLunges();
-                    break;
-                case AudioCommand.SHOULDERPRESS:
-                    StartShoulderPresses();
                     break;
                 case AudioCommand.JUMPINGJACK:
                     StartJumpingJacks();
                     break;
-                case AudioCommand.SELECT:
+                case AudioCommand.LUNGES:
+                    StartSplitLegLunges();
+                    break;
+                case AudioCommand.LATERALFLY:
+                    StartLateralFly();
+                    break;
+                case AudioCommand.SHOULDERPRESS:
+                    StartShoulderPresses();
+                    break;
+                case AudioCommand.SQUAT:
+                    StartSquats();
+                    break;
+                case AudioCommand.VERTICALJUMP:
+                    StartVerticalJump();
                     break;
             }
         }
