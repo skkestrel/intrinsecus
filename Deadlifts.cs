@@ -107,6 +107,11 @@ namespace EhT.Intrinsecus
             return 0;
         }
 
+        public int GetTargetReps()
+        {
+            return 10;
+        }
+
         private bool TorsoStraight()
         {
             if ((MathUtil.CosineLaw(Neck, SpineShoulder, SpineMid) > 170) && (MathUtil.CosineLaw(SpineShoulder, SpineMid, SpineBase) > 170)) return true;
