@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Speech.Synthesis;
@@ -72,6 +73,11 @@ namespace EhT.Intrinsecus
 		private readonly ColorFrameReader colorFrameReader;
 
 		/// <summary>
+		/// ir frame reader
+		/// </summary>
+		private readonly InfraredFrameReader infraredFrameReader;
+
+		/// <summary>
 		/// Array for the bodies
 		/// </summary>
 		private Body[] bodies;
@@ -141,6 +147,8 @@ namespace EhT.Intrinsecus
 		/// </summary>        
 		private readonly Brush inferredJointBrush = Brushes.Yellow;
 
+		private readonly WriteableBitmap infraredBitmap;
+
 		/// <summary>
 		/// Initializes a new instance of the Intrinsecus class.
 		/// </summary>
@@ -158,6 +166,9 @@ namespace EhT.Intrinsecus
 			// get the depth (display) extents
 			FrameDescription colorFrameDescription = kinectSensor.ColorFrameSource.FrameDescription;
 
+			// get the depth (display) extents
+			FrameDescription infraredFrameDescription = kinectSensor.InfraredFrameSource.FrameDescription;
+
 			// get size of joint space
 			displayWidth = frameDescription.Width;
 			displayHeight = frameDescription.Height;
@@ -173,6 +184,9 @@ namespace EhT.Intrinsecus
 
 			// open the reader for the body frames
 			colorFrameReader = kinectSensor.ColorFrameSource.OpenReader();
+
+			// open the reader for the body frames
+			infraredFrameReader = kinectSensor.InfraredFrameSource.OpenReader();
 
 			// populate body colors, one for each BodyIndex
 			bodyColors = new List<Pen>
@@ -211,7 +225,15 @@ namespace EhT.Intrinsecus
 			colorBitmap = new WriteableBitmap(colorFrameDescription.Width, colorFrameDescription.Height, 96.0, 96.0, PixelFormats.Bgr32, null);
 
 			synth = new SpeechSynthesizer();
-			synth.SetOutputToDefaultAudioDevice();
+
+			try
+			{
+				synth.SetOutputToDefaultAudioDevice();
+			}
+			catch (PlatformNotSupportedException)
+			{
+				synth = null;
+			} 
 
 			// initialize the components (controls) of the window
 			InitializeComponent();
@@ -227,7 +249,14 @@ namespace EhT.Intrinsecus
 			if (bodyFrameReader != null)
 			{
 				bodyFrameReader.FrameArrived += Reader_FrameArrived;
+			}
+			if (colorFrameReader != null)
+			{
 				colorFrameReader.FrameArrived += Reader_ColorFrameArrived;
+			}
+			if (infraredFrameReader != null)
+			{
+				infraredFrameReader.FrameArrived += Reader_InfraredFrameArrived;
 			}
 
 			// set the status text
@@ -394,6 +423,34 @@ namespace EhT.Intrinsecus
 			}
 		}
 
+        private void Reader_InfraredFrameArrived(object sender, InfraredFrameArrivedEventArgs e)
+        {
+            // InfraredFrame is IDisposable
+            using (InfraredFrame infraredFrame = e.FrameReference.AcquireFrame())
+            {
+	            if (infraredFrame == null) return;
+
+	            FrameDescription infraredFrameDescription = infraredFrame.FrameDescription;
+
+	            ushort[] inf = new ushort[infraredFrameDescription.Height * infraredFrameDescription.Width];
+	            infraredFrame.CopyFrameDataToArray(inf);
+
+				System.Console.WriteLine(inf[0]);
+
+	            // the fastest way to process the infrared frame data is to directly access 
+	            // the underlying buffer
+	            using (KinectBuffer infraredBuffer = infraredFrame.LockImageBuffer())
+	            {
+		            // verify data and write the new infrared frame data to the display bitmap
+		            if (((infraredFrameDescription.Width * infraredFrameDescription.Height) == (infraredBuffer.Size / infraredFrameDescription.BytesPerPixel)) &&
+		                (infraredFrameDescription.Width == infraredBitmap.PixelWidth) && (infraredFrameDescription.Height == infraredBitmap.PixelHeight))
+		            {
+			            //infraredBuffer.UnderlyingBuffer
+		            }
+	            }
+            }
+        }
+
 		public Point CameraToScreen(CameraSpacePoint point)
 		{
 			CameraSpacePoint position = point;
@@ -411,6 +468,9 @@ namespace EhT.Intrinsecus
 		public void SetExercise(IExercise e)
 		{
 			CurrentExercise = e;
+
+			if (synth == null) return;
+
 			if (CurrentExercise != null)
 			{
 				synth.SpeakAsync("Starting a set of " + CurrentExercise.GetPhoneticName());
