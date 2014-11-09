@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Body Basics" 
         Height="768" Width="1024" 
-        Loaded="InvictusWindow_Loaded"
+        Loaded="IntrinsecusWindow_Loaded"
         Closing="MainWindow_Closing" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
 	<Window.Resources>
 		<SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e" />
