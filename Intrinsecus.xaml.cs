@@ -3,8 +3,6 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Kinect;
-using Microsoft.Speech.AudioFormat;
-using Microsoft.Speech.Recognition;
 
 namespace EhT.Intrinsecus
 {
@@ -19,49 +17,9 @@ namespace EhT.Intrinsecus
         public ImageSource ImageSource { get; private set; }
 
         /// <summary>
-        /// Radius of drawn hand circles
-        /// </summary>
-        private const double HandSize = 30;
-
-        /// <summary>
-        /// Thickness of drawn joint lines
-        /// </summary>
-        private const double JointThickness = 3;
-
-        /// <summary>
         /// Thickness of clip edge rectangles
         /// </summary>
         private const double ClipBoundsThickness = 10;
-
-        /// <summary>
-        /// Constant for clamping Z values of camera space points from being negative
-        /// </summary>
-        private const float InferredZPositionClamp = 0.1f;
-
-        /// <summary>
-        /// Brush used for drawing hands that are currently tracked as closed
-        /// </summary>
-        private readonly Brush handClosedBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0));
-
-        /// <summary>
-        /// Brush used for drawing hands that are currently tracked as opened
-        /// </summary>
-        private readonly Brush handOpenBrush = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
-
-        /// <summary>
-        /// Brush used for drawing hands that are currently tracked as in lasso (pointer) position
-        /// </summary>
-        private readonly Brush handLassoBrush = new SolidColorBrush(Color.FromArgb(128, 0, 0, 255));
-
-        /// <summary>
-        /// Brush used for drawing joints that are currently tracked
-        /// </summary>
-        private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
-
-        /// <summary>
-        /// Brush used for drawing joints that are currently inferred
-        /// </summary>        
-        private readonly Brush inferredJointBrush = Brushes.Yellow;
 
         /// <summary>
         /// Pen used for drawing bones that are currently inferred
@@ -81,7 +39,7 @@ namespace EhT.Intrinsecus
 		/// <summary>
         /// Speech recognition engine using audio data from Kinect.
         /// </summary>
-        private AudioSpeechEngine speechEngine = null;
+        private AudioSpeechEngine speechEngine;
 
 		/// <summary>
 		/// Coordinate mapper to map one type of point to another
@@ -133,8 +91,8 @@ namespace EhT.Intrinsecus
 
             if (kinectSensor != null)
             {
-                this.speechEngine = new AudioSpeechEngine(kinectSensor);
-                this.speechEngine.CommandRecieved += AudioCommandReceived;
+                speechEngine = new AudioSpeechEngine(kinectSensor);
+                speechEngine.CommandRecieved += AudioCommandReceived;
             }
 
             // open the reader for the body frames
@@ -318,31 +276,6 @@ namespace EhT.Intrinsecus
             {
                 DrawBone(bone, drawingContext, drawingPen);
             }
-
-			/*
-            // Draw the joints
-            foreach (JointType jointType in joints.Keys)
-            {
-                Brush drawBrush = null;
-
-                TrackingState trackingState = joints[jointType].TrackingState;
-
-                switch (trackingState)
-                {
-	                case TrackingState.Tracked:
-		                drawBrush = trackedJointBrush;
-		                break;
-	                case TrackingState.Inferred:
-		                drawBrush = inferredJointBrush;
-		                break;
-                }
-
-                if (drawBrush != null)
-                {
-                    drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
-                }
-            }
-			*/
         }
 
         /// <summary>
@@ -373,30 +306,6 @@ namespace EhT.Intrinsecus
 	        Point secondPoint = new Point(secondDepthSpacePoint.X, secondDepthSpacePoint.Y);
 
 	        drawingContext.DrawLine(drawPen, firstPoint, secondPoint);
-        }
-
-        /// <summary>
-        /// Draws a hand symbol if the hand is tracked: red circle = closed, green circle = opened; blue circle = lasso
-        /// </summary>
-        /// <param name="handState">state of the hand</param>
-        /// <param name="handPosition">position of the hand</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        private void DrawHand(HandState handState, Point handPosition, DrawingContext drawingContext)
-        {
-            switch (handState)
-            {
-                case HandState.Closed:
-                    drawingContext.DrawEllipse(handClosedBrush, null, handPosition, HandSize, HandSize);
-                    break;
-
-                case HandState.Open:
-                    drawingContext.DrawEllipse(handOpenBrush, null, handPosition, HandSize, HandSize);
-                    break;
-
-                case HandState.Lasso:
-                    drawingContext.DrawEllipse(handLassoBrush, null, handPosition, HandSize, HandSize);
-                    break;
-            }
         }
 
         /// <summary>
