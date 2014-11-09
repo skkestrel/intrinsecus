@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
@@ -73,11 +73,6 @@ namespace EhT.Intrinsecus
 		private readonly ColorFrameReader colorFrameReader;
 
 		/// <summary>
-		/// ir frame reader
-		/// </summary>
-		private readonly InfraredFrameReader infraredFrameReader;
-
-		/// <summary>
 		/// Array for the bodies
 		/// </summary>
 		private Body[] bodies;
@@ -107,10 +102,10 @@ namespace EhT.Intrinsecus
 		/// </summary>
 		public IExercise CurrentExercise;
 
-        /// <summary>
-        /// the current exercise in play
-        /// </summary>
-        public SelectionDialogue SingletonSelectionDialogue = null;
+		/// <summary>
+		/// the current exercise in play
+		/// </summary>
+		public SelectionDialogue SingletonSelectionDialogue = null;
 
 		/// <summary>
 		/// Radius of drawn hand circles
@@ -147,8 +142,6 @@ namespace EhT.Intrinsecus
 		/// </summary>        
 		private readonly Brush inferredJointBrush = Brushes.Yellow;
 
-		private readonly WriteableBitmap infraredBitmap;
-
 		/// <summary>
 		/// Initializes a new instance of the Intrinsecus class.
 		/// </summary>
@@ -166,9 +159,6 @@ namespace EhT.Intrinsecus
 			// get the depth (display) extents
 			FrameDescription colorFrameDescription = kinectSensor.ColorFrameSource.FrameDescription;
 
-			// get the depth (display) extents
-			FrameDescription infraredFrameDescription = kinectSensor.InfraredFrameSource.FrameDescription;
-
 			// get size of joint space
 			displayWidth = frameDescription.Width;
 			displayHeight = frameDescription.Height;
@@ -184,9 +174,6 @@ namespace EhT.Intrinsecus
 
 			// open the reader for the body frames
 			colorFrameReader = kinectSensor.ColorFrameSource.OpenReader();
-
-			// open the reader for the body frames
-			infraredFrameReader = kinectSensor.InfraredFrameSource.OpenReader();
 
 			// populate body colors, one for each BodyIndex
 			bodyColors = new List<Pen>
@@ -233,7 +220,7 @@ namespace EhT.Intrinsecus
 			catch (PlatformNotSupportedException)
 			{
 				synth = null;
-			} 
+			}
 
 			// initialize the components (controls) of the window
 			InitializeComponent();
@@ -253,10 +240,6 @@ namespace EhT.Intrinsecus
 			if (colorFrameReader != null)
 			{
 				colorFrameReader.FrameArrived += Reader_ColorFrameArrived;
-			}
-			if (infraredFrameReader != null)
-			{
-				infraredFrameReader.FrameArrived += Reader_InfraredFrameArrived;
 			}
 
 			// set the status text
@@ -374,9 +357,9 @@ namespace EhT.Intrinsecus
 						}
 
 						int t = CurrentExercise.Update(body, dc, this);
-                        RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/" 
-                            + CurrentExercise.GetTargetReps().ToString(CultureInfo.InvariantCulture);
-                        if (t >= CurrentExercise.GetTargetReps())
+						RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/"
+							+ CurrentExercise.GetTargetReps().ToString(CultureInfo.InvariantCulture);
+						if (t >= CurrentExercise.GetTargetReps())
 						{
 							SetExercise(null);
 						}
@@ -423,38 +406,8 @@ namespace EhT.Intrinsecus
 			}
 		}
 
-        private void Reader_InfraredFrameArrived(object sender, InfraredFrameArrivedEventArgs e)
-        {
-            // InfraredFrame is IDisposable
-            using (InfraredFrame infraredFrame = e.FrameReference.AcquireFrame())
-            {
-	            if (infraredFrame == null) return;
-
-	            FrameDescription infraredFrameDescription = infraredFrame.FrameDescription;
-
-	            ushort[] inf = new ushort[infraredFrameDescription.Height * infraredFrameDescription.Width];
-	            infraredFrame.CopyFrameDataToArray(inf);
-
-				System.Console.WriteLine(inf[0]);
-
-	            // the fastest way to process the infrared frame data is to directly access 
-	            // the underlying buffer
-	            using (KinectBuffer infraredBuffer = infraredFrame.LockImageBuffer())
-	            {
-		            // verify data and write the new infrared frame data to the display bitmap
-		            if (((infraredFrameDescription.Width * infraredFrameDescription.Height) == (infraredBuffer.Size / infraredFrameDescription.BytesPerPixel)) &&
-		                (infraredFrameDescription.Width == infraredBitmap.PixelWidth) && (infraredFrameDescription.Height == infraredBitmap.PixelHeight))
-		            {
-			            //infraredBuffer.UnderlyingBuffer
-		            }
-	            }
-            }
-        }
-
 		public Point CameraToScreen(CameraSpacePoint point)
 		{
-			CameraSpacePoint position = point;
-
 			if (point.Z < 0)
 			{
 				point.Z = 0.1f;
@@ -474,13 +427,13 @@ namespace EhT.Intrinsecus
 			if (CurrentExercise != null)
 			{
 				synth.SpeakAsync("Starting a set of " + CurrentExercise.GetPhoneticName());
-                InstructionLabel.Content = "None";
+				InstructionLabel.Content = "None";
 				ExerciseLabel.Content = CurrentExercise.GetName();
 			}
 			else
 			{
 				synth.SpeakAsync("Exercise finished");
-                InstructionLabel.Content = "None";
+				InstructionLabel.Content = "None";
 				ExerciseLabel.Content = "None";
 			}
 		}
@@ -491,13 +444,13 @@ namespace EhT.Intrinsecus
 			{
 				// not implemented BACK, ENTER, SQUAT, DEADLIFT, LUNGES, SHOULDERPRESS
 				case AudioCommand.SELECT:
-                    if (SingletonSelectionDialogue == null)
-                    {
-                        SingletonSelectionDialogue = new SelectionDialogue(this);
-                        SingletonSelectionDialogue.Show();
-                    }
-        
-                        break;
+					if (SingletonSelectionDialogue == null)
+					{
+						SingletonSelectionDialogue = new SelectionDialogue(this);
+						SingletonSelectionDialogue.Show();
+					}
+
+					break;
 			}
 		}
 
