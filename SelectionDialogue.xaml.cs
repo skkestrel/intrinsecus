@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace EhT.Intrinsecus
 {
@@ -7,14 +8,34 @@ namespace EhT.Intrinsecus
     /// </summary>
     public partial class SelectionDialogue
     {
-        public SelectionDialogue()
+        public SelectionDialogue(Intrinsecus parent)
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
+		private void SquatsButton_Click(object sender, RoutedEventArgs e)
+		{
 
-        }
+		}
+
+		private void DeadliftsButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void ShoulderPressesButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void SplitLegLungesButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void SquatsButton1_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
     }
 }

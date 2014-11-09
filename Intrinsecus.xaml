@@ -1,4 +1,4 @@
-﻿<Window x:Name="IntrinsecusWindow" x:Class="EhT.Intrinsecus.MainWindow"
+﻿<Window x:Name="IntrinsecusWindow" x:Class="EhT.Intrinsecus.Intrinsecus"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Body Basics" 

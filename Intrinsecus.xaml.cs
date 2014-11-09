@@ -7,9 +7,9 @@ using Microsoft.Kinect;
 namespace EhT.Intrinsecus
 {
 	/// <summary>
-    /// Interaction logic for MainWindow
+    /// Interaction logic for Intrinsecus
     /// </summary>
-    public partial class MainWindow
+    public partial class Intrinsecus
     {
         /// <summary>
         /// Gets the bitmap to display
@@ -49,7 +49,7 @@ namespace EhT.Intrinsecus
 		/// <summary>
         /// Speech recognition engine using audio data from Kinect.
         /// </summary>
-        private AudioSpeechEngine speechEngine;
+        public AudioSpeechEngine speechEngine;
 
 		/// <summary>
 		/// Coordinate mapper to map one type of point to another
@@ -84,12 +84,12 @@ namespace EhT.Intrinsecus
 		/// <summary>
 		/// the current exercise in play
 		/// </summary>
-		private IExercise currentExercise;
+		public IExercise currentExercise;
 
         /// <summary>
-        /// Initializes a new instance of the MainWindow class.
+        /// Initializes a new instance of the Intrinsecus class.
         /// </summary>
-        public MainWindow()
+        public Intrinsecus()
         {
             // one sensor is currently supported
             kinectSensor = KinectSensor.GetDefault();
@@ -232,7 +232,7 @@ namespace EhT.Intrinsecus
 			        DrawBody(dc, drawPen);
 		        }
 
-		        if (currentExercise.Update(dc) >= targetReps)
+		        if (currentExercise != null && currentExercise.Update(dc) >= targetReps)
 		        {
 			        currentExercise = null;
 		        }
@@ -376,7 +376,7 @@ namespace EhT.Intrinsecus
 
         private void SelectionDialogueButton_Click(object sender, RoutedEventArgs e)
         {
-            new SelectionDialogue().Show();
+            new SelectionDialogue(this).Show();
         }
     }
 }
