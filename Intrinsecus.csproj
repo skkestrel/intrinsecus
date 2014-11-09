@@ -80,6 +80,7 @@
     <Compile Include="Deadlifts.cs" />
     <Compile Include="IExercise.cs" />
     <Compile Include="JumpingJacks.cs" />
+    <Compile Include="MathUtil.cs" />
     <Compile Include="SelectionDialogue.xaml.cs">
       <DependentUpon>SelectionDialogue.xaml</DependentUpon>
     </Compile>
