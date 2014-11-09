@@ -6,7 +6,7 @@ using System.Windows;
 
 namespace EhT.Intrinsecus
 {
-    public class Squat : IExercise
+    public class Squat: IExercise
     {
         public int reps;
 
@@ -16,13 +16,14 @@ namespace EhT.Intrinsecus
             reps = 0;
         }
 
-        public bool Update(System.Windows.Media.DrawingContext ctx)
+        public bool Update(Body body, System.Windows.Media.DrawingContext ctx)
     {
-        
-       Joint HipJoint = Bone.FemurLeft.FirstJoint;
-       Joint KneeJoint = Bone.FemurRight.SecondJoint;
 
-       float HipKnee = HipJoint.Position.Y - KneeJoint.Position.Y;
+        float HipPoint = body.Joints[JointType.HipLeft].Position.Y;
+        float KneePoint = body.Joints[JointType.KneeLeft].Position.Y;
+
+
+        float HipKnee = HipPoint - KneePoint;
        
        if (HipKnee > 0) {
            if (RepComplete) {
