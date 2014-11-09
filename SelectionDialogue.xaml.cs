@@ -75,7 +75,7 @@ namespace EhT.Intrinsecus
 
         private void StartSplitLegLunges()
         {
-            this.parent.SetExercise(new SplitLegLunges(), reps);
+            this.parent.SetExercise(new SplitLegLunges(reps), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }

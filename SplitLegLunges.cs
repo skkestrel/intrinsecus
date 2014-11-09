@@ -12,6 +12,7 @@ namespace EhT.Intrinsecus
     {
         private Transition state;
         private int reps;
+        private int targetReps;
         private int repFlashTicks;
 
         enum Transition
@@ -20,11 +21,12 @@ namespace EhT.Intrinsecus
             DownToUp,
         }
 
-        public SplitLegLunges()
+        public SplitLegLunges(int tarReps)
 		{
             state = Transition.UpToDown;
             reps = 0;
             repFlashTicks = 4;
+            this.targetReps = tarReps;
 		}
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
@@ -93,7 +95,7 @@ namespace EhT.Intrinsecus
 
         public int GetTargetReps()
         {
-            return 20;
+            return targetReps;
         }
 
         public string GetName()
