@@ -67,6 +67,7 @@ namespace EhT.Intrinsecus
                 if (state == Transition.UpToDown)
                 {
                     reps++;
+                    speechflag = true;
                     intrinsecus.InstructionLabel.Content = "You're flying bro!";
                     state = Transition.DownToUp;
                 }
