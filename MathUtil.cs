@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
 {
-    static class CosineLaw
+    static class MathUtil
     {
         /// <summary>
         /// Returns the angle between the lines formed by C->A and C->B
         /// </summary>
-        static double cosLaw(Point A, Point B, Point C)
+        public static double CosineLaw(CameraSpacePoint A, CameraSpacePoint B, CameraSpacePoint C)
         {
             double angle;
 
