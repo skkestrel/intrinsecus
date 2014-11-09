@@ -31,7 +31,7 @@
 		<Label x:Name="IntrinsecusLabel" Content="Intrinsecus" Margin="10" Grid.Row="0" Grid.ColumnSpan="2" Grid.Column="0"
 		       FontSize="72"/>
 		<Button x:Name="SelectionDialogueButton" Content="Selection" Grid.Row="0" Grid.Column="1" Margin="10" Click="SelectionDialogueButton_Click" FontSize="48"/>
-		<Label x:Name="RepCountLabel" Content="Label" Grid.Column="1" Margin="10" Grid.Row="3" Grid.RowSpan="2"/>
+		<Label x:Name="RepCountLabel" Content="0" Grid.Column="1" Margin="10" Grid.Row="3" Grid.RowSpan="2" VerticalAlignment="Center" Width="50" FontSize="72"/>
 		<Label x:Name="StatusLabel" Content="Label" Margin="0" Grid.Row="4" Grid.Column="0" />
 	</Grid>
 </Window>
