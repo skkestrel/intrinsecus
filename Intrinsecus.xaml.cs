@@ -61,7 +61,7 @@ namespace EhT.Intrinsecus
 		/// <summary>
 		/// Coordinate mapper to map one type of point to another
 		/// </summary>
-		private readonly CoordinateMapper coordinateMapper;
+		public readonly CoordinateMapper CoordinateMapper;
 
 		/// <summary>
 		/// Reader for body frames
@@ -135,7 +135,7 @@ namespace EhT.Intrinsecus
 			kinectSensor = KinectSensor.GetDefault();
 
 			// get the coordinate mapper
-			coordinateMapper = kinectSensor.CoordinateMapper;
+			CoordinateMapper = kinectSensor.CoordinateMapper;
 
 			// get the depth (display) extents
 			FrameDescription frameDescription = kinectSensor.DepthFrameSource.FrameDescription;
@@ -250,51 +250,58 @@ namespace EhT.Intrinsecus
 				}
 			}
 
-			if (dataReceived)
+			if (!dataReceived) return;
+
+			using (DrawingContext dc = drawingGroup.Open())
 			{
-				using (DrawingContext dc = drawingGroup.Open())
+				// Draw a transparent background to set the render size
+				dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
+
+				int penIndex = 0;
+				foreach (Body body in bodies)
 				{
-					// Draw a transparent background to set the render size
-					dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
+					Pen drawPen = bodyColors[penIndex++];
 
-					int penIndex = 0;
-					foreach (Body body in bodies)
+					if (body.IsTracked)
 					{
-						Pen drawPen = bodyColors[penIndex++];
+						DrawClippedEdges(body, dc);
 
-						if (body.IsTracked)
+						IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
+
+						// convert the joint points to depth (display) space
+						Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
+
+						foreach (JointType jointType in joints.Keys)
 						{
-							DrawClippedEdges(body, dc);
-
-							IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
-
-							// convert the joint points to depth (display) space
-							Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
-
-							foreach (JointType jointType in joints.Keys)
+							// sometimes the depth(Z) of an inferred joint may show as negative
+							// clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
+							CameraSpacePoint position = joints[jointType].Position;
+							if (position.Z < 0)
 							{
-								// sometimes the depth(Z) of an inferred joint may show as negative
-								// clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
-								CameraSpacePoint position = joints[jointType].Position;
-								if (position.Z < 0)
-								{
-									position.Z = InferredZPositionClamp;
-								}
-
-								DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
-								jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+								position.Z = InferredZPositionClamp;
 							}
 
-							DrawBody(joints, jointPoints, dc, drawPen);
+							DepthSpacePoint depthSpacePoint = CoordinateMapper.MapCameraPointToDepthSpace(position);
+							jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+						}
 
-							DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
-							DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+						DrawBody(joints, jointPoints, dc, drawPen);
+
+						DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
+						DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+
+						if (currentExercise != null)
+						{
+							int t = currentExercise.Update(body, dc, this);
+							RepCountLabel.Content = t.ToString();
+							if (t >= targetReps)
+								currentExercise = null;
 						}
 					}
-
-					// prevent drawing outside of our render area
-					drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
 				}
+
+				// prevent drawing outside of our render area
+				drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
 			}
 		}
 

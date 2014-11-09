@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
 {
     class ShoulderPresses : IExercise
     {
-        public int Update(Body body, System.Windows.Media.DrawingContext ctx)
+        public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
             return 0;
         }

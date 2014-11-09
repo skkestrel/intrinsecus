@@ -1,10 +1,11 @@
-﻿using Microsoft.Kinect;
+﻿using System.Windows.Media;
+using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
 {
     class JumpingJacks : IExercise
     {
-        public int Update(Body body, System.Windows.Media.DrawingContext ctx)
+        public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
             return 0;
         }

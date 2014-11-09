@@ -1,4 +1,5 @@
-﻿using Microsoft.Kinect;
+﻿using System.Windows.Media;
+using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
 {
@@ -9,8 +10,9 @@ namespace EhT.Intrinsecus
 		/// </summary>
 		/// <param name="body">the body to update for</param>
 		/// <param name="ctx">the drawing context for the viewbox</param>
+		/// <param name="intrinsecus"></param>
 		/// <returns>the number of reps completed</returns>returns>
-        int Update(Body body, System.Windows.Media.DrawingContext ctx);
+		int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus);
 
         string GetName();
 
