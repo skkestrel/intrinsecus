@@ -16,6 +16,7 @@ namespace EhT.Intrinsecus
         private int repFlashTicks = 4;
         private double prevLeftAngle;
         private double prevRightAngle;
+        private Intrinsecus parent;
 
         enum Transition
         {
@@ -23,11 +24,23 @@ namespace EhT.Intrinsecus
             DownToUp,
         }
 
-        public ShoulderPresses(int goalReps)
+        public ShoulderPresses(int goalReps, Intrinsecus parent)
 		{
+            parent.synth.SpeakAsync("Starting a set of " + GetPhoneticName());
+            parent.InstructionLabel.Content = "None";
+            parent.ExerciseLabel.Content = GetName();
+            this.parent = parent;
+
             state = Transition.DownToUp;
             this.targetReps = goalReps;
 		}
+
+        ~ShoulderPresses()
+        {
+			parent.synth.SpeakAsync("Exercise finished");
+			parent.InstructionLabel.Content = "None";
+			parent.ExerciseLabel.Content = "None";
+        }
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {

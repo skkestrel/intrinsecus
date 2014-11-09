@@ -425,21 +425,6 @@ namespace EhT.Intrinsecus
 		public void SetExercise(IExercise e, int reps = 10)
 		{
 			CurrentExercise = e;
-
-			if (synth == null) return;
-
-			if (CurrentExercise != null)
-			{
-				synth.SpeakAsync("Starting a set of " + CurrentExercise.GetPhoneticName());
-				InstructionLabel.Content = "None";
-				ExerciseLabel.Content = CurrentExercise.GetName();
-			}
-			else
-			{
-				synth.SpeakAsync("Exercise finished");
-				InstructionLabel.Content = "None";
-				ExerciseLabel.Content = "None";
-			}
 		}
 
 		void AudioCommandReceived(object sender, AudioCommandEventArgs e)

@@ -25,12 +25,18 @@ namespace EhT.Intrinsecus
         bool jumpDetected;
 
         Stopwatch watch;
+        private Intrinsecus parent;
 
         int count;
         int targetCount;
 
-        public VerticalJumpTest(int tarCount)
-        {
+        public VerticalJumpTest(int tarCount, Intrinsecus parent)
+        {        
+            parent.synth.SpeakAsync("Starting a set of " + GetPhoneticName());
+            parent.InstructionLabel.Content = "None";
+            parent.ExerciseLabel.Content = GetName();
+            this.parent = parent;
+
             count = 0;
             jumpDetected = false;
             watch = new Stopwatch();
@@ -38,6 +44,13 @@ namespace EhT.Intrinsecus
             highestAcceleration = 0;
             this.targetCount = tarCount;
 
+        }
+
+        ~VerticalJumpTest()
+        {
+			parent.synth.SpeakAsync("Exercise finished");
+			parent.InstructionLabel.Content = "None";
+			parent.ExerciseLabel.Content = "None";
         }
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)

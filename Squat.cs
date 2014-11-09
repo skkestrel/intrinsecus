@@ -12,6 +12,7 @@ namespace EhT.Intrinsecus
 		private int repflashtick = 0;
 		private int reps = 0;
         private int targetReps;
+        private Intrinsecus parent;
 
 		private bool repComplete;
 
@@ -23,11 +24,23 @@ namespace EhT.Intrinsecus
 
         private Transition state = Transition.UPTODOWN;
 
-		public Squat(int tarReps)
-		{
+        public Squat(int tarReps, Intrinsecus parent)
+        {
+            parent.synth.SpeakAsync("Starting a set of " + GetPhoneticName());
+            parent.InstructionLabel.Content = "None";
+            parent.ExerciseLabel.Content = GetName();
+            this.parent = parent;
+
 			reps = 0;
             this.targetReps = tarReps;
 		}
+
+        ~Squat()
+        {
+			parent.synth.SpeakAsync("Exercise finished");
+			parent.InstructionLabel.Content = "None";
+			parent.ExerciseLabel.Content = "None";
+        }
 
 		public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
