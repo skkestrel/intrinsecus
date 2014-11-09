@@ -10,6 +10,7 @@ namespace EhT.Intrinsecus
     {
 
         private Intrinsecus parent;
+        private int reps;
 
         public SelectionDialogue(Intrinsecus parent)
         {
@@ -88,6 +89,17 @@ namespace EhT.Intrinsecus
             this.parent.SingletonSelectionDialogue = null;
         }
 
+        private void SetRepsButton_Click()
+        {
+            SetReps();
+        }
+
+        private void SetReps()
+        {
+            string textBoxContents = this.RepTextBox.Text;
+            Int32.TryParse(textBoxContents, out reps);
+        }
+
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
         {
             switch (e.command)
@@ -116,5 +128,6 @@ namespace EhT.Intrinsecus
                     break;
             }
         }
+
     }
 }
