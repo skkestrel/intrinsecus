@@ -25,9 +25,12 @@ namespace EhT.Intrinsecus
 
         ~JumpingJacks()
         {
-			parent.synth.SpeakAsync("Exercise finished");
-			parent.InstructionLabel.Content = "None";
-			parent.ExerciseLabel.Content = "None";
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            parent.synth.SpeakAsync("Exercise finished");
         }
 
         enum Transition

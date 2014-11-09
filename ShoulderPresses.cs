@@ -37,9 +37,12 @@ namespace EhT.Intrinsecus
 
         ~ShoulderPresses()
         {
-			parent.synth.SpeakAsync("Exercise finished");
-			parent.InstructionLabel.Content = "None";
-			parent.ExerciseLabel.Content = "None";
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            parent.synth.SpeakAsync("Exercise finished");
         }
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)

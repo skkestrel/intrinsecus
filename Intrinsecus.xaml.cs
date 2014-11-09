@@ -365,7 +365,9 @@ namespace EhT.Intrinsecus
 							+ CurrentExercise.GetTargetReps().ToString(CultureInfo.InvariantCulture);
 						if (t >= CurrentExercise.GetTargetReps())
 						{
-							SetExercise(null);
+                            SetExercise(null);
+                            InstructionLabel.Content = "None";
+                            ExerciseLabel.Content = "None";
 						}
 					}
 				}

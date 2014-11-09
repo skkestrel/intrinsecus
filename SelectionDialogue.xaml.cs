@@ -26,9 +26,11 @@ namespace EhT.Intrinsecus
             reps = 10;
         }
 
-         ~SelectionDialogue()
+        private void Destroy()
         {
             this.parent.SpeechEngine.CommandRecieved -= AudioCommandReceived;
+            this.Close();
+            this.parent.SingletonSelectionDialogue = null;
         }
 
 		private void SquatsButton_Click(object sender, RoutedEventArgs e)
@@ -39,8 +41,7 @@ namespace EhT.Intrinsecus
         private void StartSquats()
         {
             this.parent.SetExercise(new Squat(reps, parent), reps);
-            this.Close();
-            this.parent.SingletonSelectionDialogue = null;
+            Destroy();
         }
 
 		/*private void DeadliftsButton_Click(object sender, RoutedEventArgs e)
@@ -64,8 +65,7 @@ namespace EhT.Intrinsecus
         private void StartShoulderPresses()
         {
             this.parent.SetExercise(new ShoulderPresses(reps, parent), reps);
-            this.Close();
-            this.parent.SingletonSelectionDialogue = null;
+            Destroy();
 
         }
 
@@ -77,8 +77,7 @@ namespace EhT.Intrinsecus
         private void StartSplitLegLunges()
         {
             this.parent.SetExercise(new SplitLegLunges(reps, parent), reps);
-            this.Close();
-            this.parent.SingletonSelectionDialogue = null;
+            this.Destroy();
         }
 
 		private void JumpingJacksButton_Click(object sender, RoutedEventArgs e)
@@ -89,8 +88,7 @@ namespace EhT.Intrinsecus
         private void StartJumpingJacks()
         {
             this.parent.SetExercise(new JumpingJacks(reps, parent), reps);
-            this.Close();
-            this.parent.SingletonSelectionDialogue = null;
+            this.Destroy();
         }
 
         private void VerticalJumpButton_Click(object sender, RoutedEventArgs e)
@@ -101,7 +99,7 @@ namespace EhT.Intrinsecus
         private void StartVerticalJump()
         {
             this.parent.SetExercise(new VerticalJumpTest(reps, parent), reps);
-            this.Close();
+            Destroy();
         }
         private void LateralFlyButton_Click(object sender, RoutedEventArgs e)
         {
@@ -111,7 +109,7 @@ namespace EhT.Intrinsecus
         private void StartLateralFly()
         {
             this.parent.SetExercise(new LateralFly(reps, parent), reps);
-            this.Close();
+            Destroy();
         }
 
         private void SetReps()
@@ -176,6 +174,7 @@ namespace EhT.Intrinsecus
                     StartShoulderPresses();
                     break;
                 case AudioCommand.SQUAT:
+                    System.Console.WriteLine("test");
                     StartSquats();
                     break;
                 case AudioCommand.VERTICALJUMP:
