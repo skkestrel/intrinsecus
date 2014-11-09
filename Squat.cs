@@ -13,7 +13,7 @@ namespace EhT.Intrinsecus
 		private int reps = 0;
         private int targetReps;
         private Intrinsecus parent;
-
+        private bool speechFlag;
 		private bool repComplete;
 
         enum Transition
@@ -33,6 +33,7 @@ namespace EhT.Intrinsecus
 
 			reps = 0;
             this.targetReps = tarReps;
+            this.speechFlag = true;
 		}
 
         ~Squat()
@@ -44,7 +45,15 @@ namespace EhT.Intrinsecus
 
 		public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
-		    
+            if (speechFlag == true)
+            {
+                if (reps == 5) intrinsecus.synth.SpeakAsync("Only five left, you can do it!");
+                if (reps == 3) intrinsecus.synth.SpeakAsync("Three left, almost there!");
+                if (reps == 1) intrinsecus.synth.SpeakAsync("One left...");
+                if (reps == 0) intrinsecus.synth.SpeakAsync("You did your squats! Congratulations!");
+                speechFlag = false;
+            }
+            
             //left side
 			float HipPointL = body.Joints[JointType.HipLeft].Position.Y;
 			float KneePointL = body.Joints[JointType.KneeLeft].Position.Y;
@@ -65,6 +74,7 @@ namespace EhT.Intrinsecus
                 if (state == Transition.DOWNTOUP)
                 {
                     reps++;
+                    speechFlag = true;
                     state = Transition.UPTODOWN;
                 } 
 				
@@ -146,10 +156,7 @@ namespace EhT.Intrinsecus
 
 	
 			
-            if (reps == 5) intrinsecus.synth.SpeakAsync("Only five left, you can do it!");
-            if (reps == 3) intrinsecus.synth.SpeakAsync("Three left, almost there!");
-            if (reps == 1) intrinsecus.synth.SpeakAsync("One left...");
-            if (reps == 0) intrinsecus.synth.SpeakAsync("You did your squats! Congratulations!");
+
             return reps;
 		}
 
