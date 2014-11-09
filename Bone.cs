@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Media;
+using System.Windows;
 using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
 {
-    class Bone
+    public class Bone
     {
         public Joint FirstJoint { get; private set; }
         public Joint SecondJoint { get; private set; }
@@ -20,6 +22,7 @@ namespace EhT.Intrinsecus
             {
 	            FirstJoint = joints[Joints.Item1];
             }
+
             if (joints.ContainsKey(Joints.Item2))
             {
 	            SecondJoint = joints[Joints.Item2];

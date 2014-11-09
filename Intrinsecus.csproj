@@ -80,6 +80,7 @@
     <Compile Include="SelectionDialogue.xaml.cs">
       <DependentUpon>SelectionDialogue.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Squat.cs" />
     <Page Include="Intrinsecus.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

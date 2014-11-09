@@ -11,4 +11,6 @@ namespace EhT.Intrinsecus
         bool Update(System.Windows.Media.DrawingContext ctx);
 
     }
+
+
 }

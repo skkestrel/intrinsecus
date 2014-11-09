@@ -182,6 +182,7 @@ namespace EhT.Intrinsecus
 
             using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
             {
+             
                 if (bodyFrame != null)
                 {
                     if (bodies == null)
