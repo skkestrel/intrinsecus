@@ -10,7 +10,7 @@ namespace EhT.Intrinsecus
 	/// <summary>
     /// Interaction logic for MainWindow
     /// </summary>
-    public partial class MainWindow
+    public partial class Intrinsecus
     {
         /// <summary>
         /// Gets the bitmap to display
@@ -49,8 +49,9 @@ namespace EhT.Intrinsecus
 
 		/// <summary>
         /// Speech recognition engine using audio data from Kinect.
+        /// #JUSTHACKATHONTHINGS making what should be a private variable public
         /// </summary>
-        private AudioSpeechEngine speechEngine;
+        public AudioSpeechEngine speechEngine;
 
 		/// <summary>
 		/// Coordinate mapper to map one type of point to another
@@ -92,7 +93,7 @@ namespace EhT.Intrinsecus
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
-        public MainWindow()
+        public Intrinsecus()
         {
             // one sensor is currently supported
             kinectSensor = KinectSensor.GetDefault();
@@ -246,6 +247,11 @@ namespace EhT.Intrinsecus
 		        // prevent drawing outside of our render area
 		        drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
 	        }
+        }
+
+        public void setCurrentExcersize(IExercise e)
+        {
+            currentExercise = e;
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)

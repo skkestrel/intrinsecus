@@ -35,6 +35,7 @@ namespace EhT.Intrinsecus
 
         public event EventHandler<AudioCommandEventArgs> CommandRecieved;
 
+
         public AudioSpeechEngine(KinectSensor kinectSensor)
         {
 
@@ -75,6 +76,9 @@ namespace EhT.Intrinsecus
                 this.speechEngine.RecognizeAsync(RecognizeMode.Multiple);
             }
         }
+
+
+        
 
         /// <summary>
         /// Gets the metadata for the speech recognizer (acoustic model) most suitable to
@@ -155,6 +159,7 @@ namespace EhT.Intrinsecus
 
                     case "SELECT":
                         args.command = AudioCommand.SELECT;
+                        break;
                 }
 
                 handler(this, args);

@@ -14,7 +14,7 @@
 		<Button x:Name="DeadliftsButton" Content="Deadlifts" Margin="10" Click="DeadliftsButton_Click"/>
 		<Button x:Name="ShoulderPressesButton" Content="Shoulder Press" Margin="10" Click="ShoulderPressesButton_Click" Grid.Row="2"/>
 		<Button x:Name="SplitLegLungesButton" Content="Split leg lunges" Margin="10" Click="SplitLegLungesButton_Click" Grid.Row="3"/>
-		<Button x:Name="SquatsButton1" Content="Squats" Margin="10" Click="SquatsButton1_Click" Grid.Row="4"/>
+		<Button x:Name="JumpingJacksButton" Content="Squats" Margin="10" Click="JumpingJacksButton_Click" Grid.Row="4"/>
 
 
 	</Grid>
