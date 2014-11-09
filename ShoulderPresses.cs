@@ -10,12 +10,19 @@ namespace EhT.Intrinsecus
 {
     class ShoulderPresses : IExercise
     {
-        bool repComplete;
-        int reps;
+        private Transition state = Transition.DOWNTOUP;
+        private int reps = 0;
+
+        enum Transition
+        {
+            UPTODOWN,
+            DOWNTOUP,
+        }
 
         public ShoulderPresses()
 		{
-			reps = 0;
+            state = Transition.DOWNTOUP;
+            reps = 0;
 		}
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
@@ -31,18 +38,23 @@ namespace EhT.Intrinsecus
             double leftAngle = MathUtil.CosineLaw(leftWrist, leftShoulder, leftElbow);
             double rightAngle = MathUtil.CosineLaw(rightWrist, rightShoulder, rightElbow);
 
-            if ((leftAngle > 120.0) && (rightAngle > 120.0))
+            if ((leftAngle < 40) && (rightAngle < 40))
             {
-                if (!repComplete)
+                if (state == Transition.UPTODOWN)
                 {
                     reps++;
-                    repComplete = true;
+                    state = Transition.DOWNTOUP;
                 }
             }
-            else
+            else if ((leftAngle > 130) && (rightAngle > 130))
             {
-                repComplete = false;
+                if (state == Transition.DOWNTOUP)
+                {
+                    state = Transition.UPTODOWN;
+
+                }
             }
+            return reps;
 
             return reps;
         }
