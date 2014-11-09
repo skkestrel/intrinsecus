@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Speech.Synthesis;
 using System.Windows;
-using System.Windows.Media; 
+using System.Windows.Media;
 using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
 {
-	/// <summary>
-    /// Interaction logic for MainWindow
+    /// <summary>
+    /// Interaction logic for Intrinsecus
     /// </summary>
     public partial class Intrinsecus
     {
@@ -17,20 +16,20 @@ namespace EhT.Intrinsecus
         /// </summary>
         public ImageSource ImageSource { get; private set; }
 
-		/// <summary>
-		/// the target of reps
-		/// </summary>
-		private int targetReps = 10;
+        /// <summary>
+        /// the target of reps
+        /// </summary>
+        private int targetReps = 10;
 
         /// <summary>
         /// Thickness of clip edge rectangles
         /// </summary>
         private const double ClipBoundsThickness = 10;
 
-		/// <summary>
-		/// Zpos clamp
-		/// </summary>
-		private const float ZPosClamp = 0.1F;
+        /// <summary>
+        /// Zpos clamp
+        /// </summary>
+        private const float ZPosClamp = 0.1F;
 
         /// <summary>
         /// Pen used for drawing bones that are currently inferred
@@ -47,16 +46,15 @@ namespace EhT.Intrinsecus
         /// </summary>
         private KinectSensor kinectSensor;
 
-		/// <summary>
+        /// <summary>
         /// Speech recognition engine using audio data from Kinect.
-        /// #JUSTHACKATHONTHINGS making what should be a private variable public
         /// </summary>
         public AudioSpeechEngine speechEngine;
 
-		/// <summary>
-		/// Coordinate mapper to map one type of point to another
-		/// </summary>
-		private readonly CoordinateMapper coordinateMapper;
+        /// <summary>
+        /// Coordinate mapper to map one type of point to another
+        /// </summary>
+        private readonly CoordinateMapper coordinateMapper;
 
         /// <summary>
         /// Reader for body frames
@@ -83,15 +81,13 @@ namespace EhT.Intrinsecus
         /// </summary>
         private readonly List<Pen> bodyColors;
 
-        private SpeechSynthesizer synth;
-
-		/// <summary>
-		/// the current exercise in play
-		/// </summary>
-		private IExercise currentExercise;
+        /// <summary>
+        /// the current exercise in play
+        /// </summary>
+        public IExercise currentExercise;
 
         /// <summary>
-        /// Initializes a new instance of the MainWindow class.
+        /// Initializes a new instance of the Intrinsecus class.
         /// </summary>
         public Intrinsecus()
         {
@@ -117,7 +113,7 @@ namespace EhT.Intrinsecus
             // open the reader for the body frames
             bodyFrameReader = kinectSensor.BodyFrameSource.OpenReader();
 
-	        // populate body colors, one for each BodyIndex
+            // populate body colors, one for each BodyIndex
             bodyColors = new List<Pen>
             {
 	            new Pen(Brushes.Red, 6),
@@ -128,7 +124,7 @@ namespace EhT.Intrinsecus
 	            new Pen(Brushes.Violet, 6)
             };
 
-	        // set IsAvailableChanged event notifier
+            // set IsAvailableChanged event notifier
             kinectSensor.IsAvailableChanged += Sensor_IsAvailableChanged;
 
             // open the sensor
@@ -142,9 +138,6 @@ namespace EhT.Intrinsecus
 
             // use the window object as the view model in this simple example
             DataContext = this;
-
-            synth = new SpeechSynthesizer();
-            synth.SetOutputToDefaultAudioDevice();
 
             // initialize the components (controls) of the window
             InitializeComponent();
@@ -214,44 +207,39 @@ namespace EhT.Intrinsecus
                 }
             }
 
-	        if (!dataReceived) return;
+            if (!dataReceived) return;
 
-	        using (DrawingContext dc = drawingGroup.Open())
-	        {
-		        // Draw a transparent background to set the render size
-		        dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
+            using (DrawingContext dc = drawingGroup.Open())
+            {
+                // Draw a transparent background to set the render size
+                dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
 
-		        int penIndex = 0;
+                int penIndex = 0;
 
-		        foreach (Body body in bodies)
-		        {
-			        Pen drawPen = bodyColors[penIndex++];
+                foreach (Body body in bodies)
+                {
+                    Pen drawPen = bodyColors[penIndex++];
 
-			        if (!body.IsTracked) continue;
+                    if (!body.IsTracked) continue;
 
-			        DrawClippedEdges(body, dc);
+                    DrawClippedEdges(body, dc);
 
-					foreach (Bone bone in Bone.Bones)
-			        {
-						bone.Update(body.Joints);
-			        }
+                    foreach (Bone bone in Bone.Bones)
+                    {
+                        bone.Update(body.Joints);
+                    }
 
-			        DrawBody(dc, drawPen);
-		        }
+                    DrawBody(dc, drawPen);
+                }
 
-		        if (currentExercise.Update(dc) >= targetReps)
-		        {
-			        currentExercise = null;
-		        }
+                if (currentExercise != null && currentExercise.Update(dc) >= targetReps)
+                {
+                    currentExercise = null;
+                }
 
-		        // prevent drawing outside of our render area
-		        drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
-	        }
-        }
-
-        public void setCurrentExcersize(IExercise e)
-        {
-            currentExercise = e;
+                // prevent drawing outside of our render area
+                drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, displayWidth, displayHeight));
+            }
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
@@ -264,21 +252,15 @@ namespace EhT.Intrinsecus
                     break;
                 case AudioCommand.SQUAT:
                     ExerciseLabel.Content = "Squat";
-                    synth.SpeakAsync("Starting a set of squats");
                     break;
                 case AudioCommand.DEADLIFT:
                     ExerciseLabel.Content = "Deadlift";
-                    synth.SpeakAsync("Starting a set of dead lifts");
                     break;
                 case AudioCommand.LUNGES:
                     ExerciseLabel.Content = "Lunges";
-                    synth.SpeakAsync("Starting a set of lunges");
                     break;
                 case AudioCommand.SHOULDERPRESS:
                     ExerciseLabel.Content = "Shoulder Press";
-                    synth.SpeakAsync("Starting a set of shoulder presses");
-                    break;
-                case AudioCommand.SELECT:
                     break;
             }
         }
@@ -288,7 +270,7 @@ namespace EhT.Intrinsecus
         /// </summary>
         /// <param name="drawingContext">drawing context to draw to</param>
         /// <param name="drawingPen">specifies color to draw a specific body</param>
-		private void DrawBody(DrawingContext drawingContext, Pen drawingPen)
+        private void DrawBody(DrawingContext drawingContext, Pen drawingPen)
         {
             // Draw the bones
             foreach (Bone bone in Bone.Bones)
@@ -300,10 +282,10 @@ namespace EhT.Intrinsecus
         /// <summary>
         /// Draws one bone of a body (joint to joint)
         /// </summary>
-		/// <param name="bone">the bone</param>
+        /// <param name="bone">the bone</param>
         /// <param name="drawingContext">drawing context to draw to</param>
         /// /// <param name="drawingPen">specifies color to draw a specific bone</param>
-		private void DrawBone(Bone bone, DrawingContext drawingContext, Pen drawingPen)
+        private void DrawBone(Bone bone, DrawingContext drawingContext, Pen drawingPen)
         {
             // If we can't find either of these joints, exit
             if (bone.FirstJoint.TrackingState == TrackingState.NotTracked ||
@@ -319,23 +301,23 @@ namespace EhT.Intrinsecus
                 drawPen = drawingPen;
             }
 
-	        CameraSpacePoint point1 = bone.FirstJoint.Position;
-			if (point1.Z < 0f)
-			{
-				point1.Z = ZPosClamp;
-			}
-	        CameraSpacePoint point2 = bone.SecondJoint.Position;
-			if (point2.Z < 0f)
-			{
-				point2.Z = ZPosClamp;
-			}
+            CameraSpacePoint point1 = bone.FirstJoint.Position;
+            if (point1.Z < 0f)
+            {
+                point1.Z = ZPosClamp;
+            }
+            CameraSpacePoint point2 = bone.SecondJoint.Position;
+            if (point2.Z < 0f)
+            {
+                point2.Z = ZPosClamp;
+            }
 
-	        DepthSpacePoint firstDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(point1);
-	        DepthSpacePoint secondDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(point2);
-	        Point firstPoint = new Point(firstDepthSpacePoint.X, firstDepthSpacePoint.Y);
-	        Point secondPoint = new Point(secondDepthSpacePoint.X, secondDepthSpacePoint.Y);
+            DepthSpacePoint firstDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(point1);
+            DepthSpacePoint secondDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(point2);
+            Point firstPoint = new Point(firstDepthSpacePoint.X, firstDepthSpacePoint.Y);
+            Point secondPoint = new Point(secondDepthSpacePoint.X, secondDepthSpacePoint.Y);
 
-	        drawingContext.DrawLine(drawPen, firstPoint, secondPoint);
+            drawingContext.DrawLine(drawPen, firstPoint, secondPoint);
         }
 
         /// <summary>
@@ -388,7 +370,7 @@ namespace EhT.Intrinsecus
         private void Sensor_IsAvailableChanged(object sender, IsAvailableChangedEventArgs e)
         {
             // on failure, set the status text
-			StatusLabel.Content = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
+            StatusLabel.Content = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
                                                             : Properties.Resources.SensorNotAvailableStatusText;
         }
 
