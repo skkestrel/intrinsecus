@@ -10,10 +10,15 @@ using Microsoft.Speech.Recognition;
 namespace EhT.Intrinsecus
 {
 	/// <summary>
-    /// Interaction logic for Intrinsecus
+    /// Interaction logic for MainWindow
     /// </summary>
-    public partial class Intrinsecus : INotifyPropertyChanged
+    public partial class MainWindow : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Gets the bitmap to display
+        /// </summary>
+        public ImageSource ImageSource { get; private set; }
+
         /// <summary>
         /// Radius of drawn hand circles
         /// </summary>
@@ -70,11 +75,6 @@ namespace EhT.Intrinsecus
         private readonly DrawingGroup drawingGroup;
 
         /// <summary>
-        /// Drawing image that we will display
-        /// </summary>
-        private readonly DrawingImage imageSource;
-
-        /// <summary>
         /// Active Kinect sensor
         /// </summary>
         private KinectSensor kinectSensor;
@@ -120,14 +120,9 @@ namespace EhT.Intrinsecus
         private readonly List<Pen> bodyColors;
 
         /// <summary>
-        /// Current status text to display
+        /// Initializes a new instance of the MainWindow class.
         /// </summary>
-        private string statusText;
-
-        /// <summary>
-        /// Initializes a new instance of the Intrinsecus class.
-        /// </summary>
-        public Intrinsecus()
+        public MainWindow()
         {
             // one sensor is currently supported
             kinectSensor = KinectSensor.GetDefault();
@@ -180,6 +175,7 @@ namespace EhT.Intrinsecus
 	            new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft)
             };
 
+
 	        // populate body colors, one for each BodyIndex
             bodyColors = new List<Pen>
             {
@@ -197,15 +193,11 @@ namespace EhT.Intrinsecus
             // open the sensor
             kinectSensor.Open();
 
-            // set the status text
-            StatusText = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
-                                                            : Properties.Resources.NoSensorStatusText;
-
             // Create the drawing group we'll use for drawing
             drawingGroup = new DrawingGroup();
 
             // Create an image source that we can use in our image control
-            imageSource = new DrawingImage(drawingGroup);
+            ImageSource = new DrawingImage(drawingGroup);
 
             // use the window object as the view model in this simple example
             DataContext = this;
@@ -220,51 +212,20 @@ namespace EhT.Intrinsecus
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Gets the bitmap to display
-        /// </summary>
-        public ImageSource ImageSource
-        {
-            get
-            {
-                return imageSource;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the current status text to display
-        /// </summary>
-        public string StatusText
-        {
-            get
-            {
-                return statusText;
-            }
-
-            set
-            {
-	            if (statusText == value) return;
-
-	            statusText = value;
-
-	            // notify any bound elements that the text has changed
-	            if (PropertyChanged != null)
-	            {
-		            PropertyChanged(this, new PropertyChangedEventArgs("StatusText"));
-	            }
-            }
-        }
-
-        /// <summary>
         /// Execute start up tasks
         /// </summary>
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
-        private void Intrinsecus_Loaded(object sender, RoutedEventArgs e)
+        private void InvictusWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (bodyFrameReader != null)
             {
                 bodyFrameReader.FrameArrived += Reader_FrameArrived;
             }
+
+            // set the status text
+            StatusLabel.Content = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
+                                                            : Properties.Resources.NoSensorStatusText;
         }
 
         /// <summary>
@@ -272,7 +233,7 @@ namespace EhT.Intrinsecus
         /// </summary>
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
-        private void Intrinsecus_Closing(object sender, CancelEventArgs e)
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             if (bodyFrameReader != null)
             {
@@ -509,8 +470,13 @@ namespace EhT.Intrinsecus
         private void Sensor_IsAvailableChanged(object sender, IsAvailableChangedEventArgs e)
         {
             // on failure, set the status text
-            StatusText = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
+			StatusLabel.Content = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
                                                             : Properties.Resources.SensorNotAvailableStatusText;
+        }
+
+        private void SelectionDialogueButton_Click(object sender, RoutedEventArgs e)
+        {
+            new SelectionDialogue().Show();
         }
     }
 }
