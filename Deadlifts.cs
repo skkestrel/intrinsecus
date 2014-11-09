@@ -15,7 +15,7 @@ namespace EhT.Intrinsecus
         CameraSpacePoint Ankle;
         bool backstraight;
         enum Transition
-        {
+       { 
             UPTODOWN,
             DOWNTOUP
         }

@@ -19,7 +19,8 @@ namespace EhT.Intrinsecus
         LUNGES,
         SHOULDERPRESS,
         SELECT,
-        JUMPINGJACK
+        JUMPINGJACK,
+        REPCOMMAND
     }
 
     public class AudioSpeechEngine
@@ -164,7 +165,9 @@ namespace EhT.Intrinsecus
                     case "JUMPINGJACK":
                         args.command = AudioCommand.JUMPINGJACK;
                         break;
-
+                    case "REPSET":
+                        args.command = AudioCommand.REPCOMMAND;
+                        break;
                 }
 
                 handler(this, args);
