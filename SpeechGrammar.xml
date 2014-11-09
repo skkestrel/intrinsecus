@@ -52,6 +52,13 @@
           <item> selects </item>
         </one-of>
       </item>
+      <item>
+        <tag>JUMPINGJACK</tag>
+        <one-of>
+          <item> jumping jack </item>
+          <item> jumping jacks </item>
+        </one-of>
+      </item>
     </one-of>
   </rule>
 </grammar>
