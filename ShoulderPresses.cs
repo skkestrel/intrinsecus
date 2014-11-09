@@ -39,7 +39,7 @@ namespace EhT.Intrinsecus
             double leftAngle = MathUtil.CosineLaw(leftWrist, leftShoulder, leftElbow);
             double rightAngle = MathUtil.CosineLaw(rightWrist, rightShoulder, rightElbow);
 
-            if ((leftAngle < 40) && (rightAngle < 40))
+            if ((leftAngle < 70) && (rightAngle < 70))
             {
                 if (state == Transition.UpToDown)
                 {
