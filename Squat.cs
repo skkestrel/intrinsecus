@@ -60,12 +60,12 @@ namespace EhT.Intrinsecus
 			return reps;
         }
 
-        public string getName()
+        public string GetName()
         {
             return "Squat";
         }
 
-        public string getPhoneticName()
+        public string GetPhoneticName()
         {
             return "Squats";
         }

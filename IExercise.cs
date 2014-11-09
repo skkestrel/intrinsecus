@@ -12,8 +12,8 @@ namespace EhT.Intrinsecus
 		/// <returns>the number of reps completed</returns>returns>
         int Update(Body body, System.Windows.Media.DrawingContext ctx);
 
-        string getName();
+        string GetName();
 
-        string getPhoneticName();
+        string GetPhoneticName();
     }
 }

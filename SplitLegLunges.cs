@@ -14,12 +14,12 @@ namespace EhT.Intrinsecus
             return 0;
         }
 
-        public string getName()
+        public string GetName()
         {
             return "Split Leg Lunge";
         }
 
-        public string getPhoneticName()
+        public string GetPhoneticName()
         {
             return "split leg lunges";
         }

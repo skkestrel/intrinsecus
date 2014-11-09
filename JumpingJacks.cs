@@ -9,12 +9,12 @@ namespace EhT.Intrinsecus
             return 0;
         }
 
-        public string getName()
+        public string GetName()
         {
             return "Jumping Jack";
         }
 
-        public string getPhoneticName()
+        public string GetPhoneticName()
         {
             return "jumping jacks";
         }

@@ -301,8 +301,8 @@ namespace EhT.Intrinsecus
         public void setCurrentExcersize(IExercise e)
         {
             currentExercise = e;
-            synth.SpeakAsync("Starting a set of " + e.getPhoneticName());
-            ExerciseLabel.Content = e.getName();
+            synth.SpeakAsync("Starting a set of " + e.GetPhoneticName());
+            ExerciseLabel.Content = e.GetName();
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
