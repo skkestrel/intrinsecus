@@ -12,6 +12,7 @@ namespace EhT.Intrinsecus
     {
         private Transition state = Transition.DownToUp;
         private int reps = 0;
+        private int targetReps;
         private int repFlashTicks = 4;
 
         enum Transition
@@ -20,10 +21,10 @@ namespace EhT.Intrinsecus
             DownToUp,
         }
 
-        public ShoulderPresses()
+        public ShoulderPresses(int goalReps)
 		{
             state = Transition.DownToUp;
-            reps = 0;
+            this.targetReps = goalReps;
 		}
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
@@ -75,7 +76,7 @@ namespace EhT.Intrinsecus
 
         public int GetTargetReps()
         {
-            return 10;
+            return targetReps;
         }
 
         public string GetName()
