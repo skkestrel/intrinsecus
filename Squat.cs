@@ -17,7 +17,7 @@ namespace EhT.Intrinsecus
             reps = 0;
         }
 
-        public bool Update(Body body, System.Windows.Media.DrawingContext ctx)
+        public int Update(Body body, System.Windows.Media.DrawingContext ctx)
     {
         
         float HipPoint = body.Joints[JointType.HipLeft].Position.Y;
@@ -56,8 +56,8 @@ namespace EhT.Intrinsecus
         
         //case: anglebetween femur < 75
             //warn too low
-
-			return 0;
+    //  Debug.WriteLine("{0}", reps);
+			return reps;
     }
 
 
