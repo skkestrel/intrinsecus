@@ -10,19 +10,19 @@ namespace EhT.Intrinsecus
 {
     class ShoulderPresses : IExercise
     {
-        private Transition state = Transition.DOWNTOUP;
+        private Transition state = Transition.DownToUp;
         private int reps = 0;
         private int repFlashTicks = 4;
 
         enum Transition
         {
-            UPTODOWN,
-            DOWNTOUP,
+            UpToDown,
+            DownToUp,
         }
 
         public ShoulderPresses()
 		{
-            state = Transition.DOWNTOUP;
+            state = Transition.DownToUp;
             reps = 0;
 		}
 
@@ -41,17 +41,17 @@ namespace EhT.Intrinsecus
 
             if ((leftAngle < 40) && (rightAngle < 40))
             {
-                if (state == Transition.UPTODOWN)
+                if (state == Transition.UpToDown)
                 {
                     reps++;
-                    state = Transition.DOWNTOUP;
+                    state = Transition.DownToUp;
                 }
             }
             else if ((leftAngle > 130) && (rightAngle > 130))
             {
-                if (state == Transition.DOWNTOUP)
+                if (state == Transition.DownToUp)
                 {
-                    state = Transition.UPTODOWN;
+                    state = Transition.UpToDown;
                     repFlashTicks = 0;
                 }
             }

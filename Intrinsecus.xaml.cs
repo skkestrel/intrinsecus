@@ -340,7 +340,8 @@ namespace EhT.Intrinsecus
 						}
 
 						int t = CurrentExercise.Update(body, dc, this);
-                        RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/" + CurrentExercise.GetTargetReps();
+                        RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/" 
+                            + CurrentExercise.GetTargetReps().ToString(CultureInfo.InvariantCulture);
                         if (t >= CurrentExercise.GetTargetReps())
 						{
 							SetExercise(null);
