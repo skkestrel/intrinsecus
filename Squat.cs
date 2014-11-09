@@ -3,6 +3,7 @@ using Microsoft.Kinect;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows;
+using System.Speech.Synthesis;
 
 namespace EhT.Intrinsecus
 {
@@ -132,6 +133,10 @@ namespace EhT.Intrinsecus
 
 	
 			return reps;
+            if (reps == 5) intrinsecus.synth.SpeakAsync("Only five left, you can do it!");
+            if (reps == 3) intrinsecus.synth.SpeakAsync("Three left, almost there!");
+            if (reps == 1) intrinsecus.synth.SpeakAsync("One left...");
+            if (reps == 0) intrinsecus.synth.SpeakAsync("You did your squats! Congratulations!");
 		}
 
         public int GetTargetReps()

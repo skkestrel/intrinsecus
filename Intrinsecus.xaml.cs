@@ -95,7 +95,7 @@ namespace EhT.Intrinsecus
 		/// <summary>
 		/// synth
 		/// </summary>
-		private readonly SpeechSynthesizer synth;
+		public readonly SpeechSynthesizer synth;
 
 		/// <summary>
 		/// the current exercise in play
