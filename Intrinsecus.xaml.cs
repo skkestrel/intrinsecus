@@ -270,6 +270,7 @@ namespace EhT.Intrinsecus
 		        dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
 
 		        int penIndex = 0;
+
 		        foreach (Body body in bodies)
 		        {
 			        Pen drawPen = bodyColors[penIndex++];
