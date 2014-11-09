@@ -124,8 +124,26 @@ namespace EhT.Intrinsecus
                 }
             }
 
-            this.RepTextBox.Text = reps.ToString();
+            this.RepTextBox.Text = "The Rep you entered is " + reps.ToString();
             
+        }
+
+        public void ViewReps()
+        {
+            string textBoxContents = this.RepTextBox.Text;
+            int tempReps = 0;
+            
+            foreach (Body body in parent.Bodies)
+            {
+                if (body.IsTracked)
+                {
+                    tempReps = (int)(Math.Abs(body.Joints[JointType.HandLeft].Position.Y - body.Joints[JointType.HandRight].Position.Y) * 50);
+                }
+            }
+
+            this.RepTextBox.Text = tempReps.ToString();
+            
+
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)

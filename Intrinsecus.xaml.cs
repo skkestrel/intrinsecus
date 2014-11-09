@@ -304,6 +304,10 @@ namespace EhT.Intrinsecus
 
 			if (!dataReceived) return;
 
+            if (this.SingletonSelectionDialogue != null) {
+
+                this.SingletonSelectionDialogue.ViewReps();
+            }
 			using (DrawingContext dc = drawingGroup.Open())
 			{
 				// Draw a transparent background to set the render size
