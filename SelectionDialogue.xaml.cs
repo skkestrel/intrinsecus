@@ -23,6 +23,7 @@ namespace EhT.Intrinsecus
             
             InitializeComponent();
             repflag = false;
+            reps = 10;
         }
 
          ~SelectionDialogue()
