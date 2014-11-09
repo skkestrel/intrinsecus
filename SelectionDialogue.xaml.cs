@@ -16,14 +16,14 @@ namespace EhT.Intrinsecus
 	        this.parent = parent;
 
             // register event handler
-            this.parent.speechEngine.CommandRecieved += AudioCommandReceived;
+            this.parent.SpeechEngine.CommandRecieved += AudioCommandReceived;
             
             InitializeComponent();
         }
 
          ~SelectionDialogue()
         {
-            this.parent.speechEngine.CommandRecieved -= AudioCommandReceived;
+            this.parent.SpeechEngine.CommandRecieved -= AudioCommandReceived;
         }
 
 		private void SquatsButton_Click(object sender, RoutedEventArgs e)
@@ -33,7 +33,7 @@ namespace EhT.Intrinsecus
 
         private void StartSquats()
         {
-            this.parent.setCurrentExcersize(new Squat());
+            this.parent.SetExercise(new Squat());
             this.Close();
         }
 
@@ -44,7 +44,7 @@ namespace EhT.Intrinsecus
 
         private void StartDeadlifts()
         {
-            this.parent.setCurrentExcersize(new Deadlifts());
+            this.parent.SetExercise(new Deadlifts());
             this.Close();
 
         }
@@ -56,7 +56,7 @@ namespace EhT.Intrinsecus
 
         private void StartShoulderPresses()
         {
-            this.parent.setCurrentExcersize(new ShoulderPresses());
+            this.parent.SetExercise(new ShoulderPresses());
             this.Close();
 
         }
@@ -68,7 +68,7 @@ namespace EhT.Intrinsecus
 
         private void StartSplitLegLunges()
         {
-            this.parent.setCurrentExcersize(new SplitLegLunges());
+            this.parent.SetExercise(new SplitLegLunges());
             this.Close();
         }
 
@@ -79,7 +79,7 @@ namespace EhT.Intrinsecus
 
         private void StartJumpingJacks()
         {
-            this.parent.setCurrentExcersize(new JumpingJacks());
+            this.parent.SetExercise(new JumpingJacks());
             this.Close();
         }
 

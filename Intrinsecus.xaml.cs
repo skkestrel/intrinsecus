@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
@@ -56,7 +57,7 @@ namespace EhT.Intrinsecus
 		/// Speech recognition engine using audio data from Kinect.
 		/// #JUSTHACKATHONTHINGS making what should be a private variable public
 		/// </summary>
-		public AudioSpeechEngine speechEngine;
+		public AudioSpeechEngine SpeechEngine;
 
 		/// <summary>
 		/// Coordinate mapper to map one type of point to another
@@ -67,6 +68,11 @@ namespace EhT.Intrinsecus
 		/// Reader for body frames
 		/// </summary>
 		private BodyFrameReader bodyFrameReader;
+
+		/// <summary>
+		/// color frame reader
+		/// </summary>
+		private ColorFrameReader colorFrameReader;
 
 		/// <summary>
 		/// Array for the bodies
@@ -88,18 +94,25 @@ namespace EhT.Intrinsecus
 		/// </summary>
 		private readonly List<Pen> bodyColors;
 
+		/// <summary>
+		/// synth
+		/// </summary>
 		private SpeechSynthesizer synth;
 
 		/// <summary>
 		/// the current exercise in play
 		/// </summary>
-		public IExercise currentExercise;
+		public IExercise CurrentExercise;
 
 		/// <summary>
 		/// Radius of drawn hand circles
 		/// </summary>
 		private const double HandSize = 30;
 
+		/// <summary>
+		/// color bitmap
+		/// </summary>
+		private WriteableBitmap colorBitmap;
 
 		/// <summary>
 		/// brush for closed hand
@@ -140,18 +153,24 @@ namespace EhT.Intrinsecus
 			// get the depth (display) extents
 			FrameDescription frameDescription = kinectSensor.DepthFrameSource.FrameDescription;
 
+			// get the depth (display) extents
+			FrameDescription colorFrameDescription = kinectSensor.ColorFrameSource.FrameDescription;
+
 			// get size of joint space
 			displayWidth = frameDescription.Width;
 			displayHeight = frameDescription.Height;
 
 			if (kinectSensor != null)
 			{
-				speechEngine = new AudioSpeechEngine(kinectSensor);
-				speechEngine.CommandRecieved += AudioCommandReceived;
+				SpeechEngine = new AudioSpeechEngine(kinectSensor);
+				SpeechEngine.CommandRecieved += AudioCommandReceived;
 			}
 
 			// open the reader for the body frames
 			bodyFrameReader = kinectSensor.BodyFrameSource.OpenReader();
+
+			// open the reader for the body frames
+			colorFrameReader = kinectSensor.ColorFrameSource.OpenReader();
 
 			// populate body colors, one for each BodyIndex
 			bodyColors = new List<Pen>
@@ -176,8 +195,10 @@ namespace EhT.Intrinsecus
 			// Create an image source that we can use in our image control
 			ImageSource = new DrawingImage(drawingGroup);
 
-			// use the window object as the view model in this simple example
+			// use the window object as the view model in simple example
 			DataContext = this;
+
+			colorBitmap = new WriteableBitmap(colorFrameDescription.Width, colorFrameDescription.Height, 96.0, 96.0, PixelFormats.Bgr32, null);
 
 			synth = new SpeechSynthesizer();
 			synth.SetOutputToDefaultAudioDevice();
@@ -196,6 +217,7 @@ namespace EhT.Intrinsecus
 			if (bodyFrameReader != null)
 			{
 				bodyFrameReader.FrameArrived += Reader_FrameArrived;
+				colorFrameReader.FrameArrived += Reader_ColorFrameArrived;
 			}
 
 			// set the status text
@@ -255,7 +277,20 @@ namespace EhT.Intrinsecus
 			using (DrawingContext dc = drawingGroup.Open())
 			{
 				// Draw a transparent background to set the render size
-				dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
+				dc.DrawRectangle(Brushes.Transparent, null, new Rect(0.0, 0.0, displayWidth, displayHeight));
+
+				float ratio = 0.325f;
+				int offsetX = 12;
+				int offsetY = 16;
+
+				/*
+				dc.DrawImage(colorBitmap,
+					new Rect(-(colorBitmap.PixelWidth * (float) displayHeight / colorBitmap.PixelHeight - displayWidth) / 2, 0,
+						colorBitmap.PixelWidth * (float) displayHeight / colorBitmap.PixelHeight, displayHeight));
+				*/
+				dc.DrawImage(colorBitmap,
+					new Rect(-(colorBitmap.PixelWidth * ratio - displayWidth)/2 - offsetX, -(colorBitmap.PixelHeight * ratio - displayHeight)/2 - offsetY,
+						colorBitmap.PixelWidth * ratio, colorBitmap.PixelHeight * ratio));
 
 				int penIndex = 0;
 				foreach (Body body in bodies)
@@ -290,12 +325,12 @@ namespace EhT.Intrinsecus
 						DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
 						DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
 
-						if (currentExercise != null)
+						if (CurrentExercise != null)
 						{
-							int t = currentExercise.Update(body, dc, this);
+							int t = CurrentExercise.Update(body, dc, this);
 							RepCountLabel.Content = t.ToString();
 							if (t >= targetReps)
-								currentExercise = null;
+								CurrentExercise = null;
 						}
 					}
 				}
@@ -305,9 +340,44 @@ namespace EhT.Intrinsecus
 			}
 		}
 
-		public void setCurrentExcersize(IExercise e)
+        /// <summary>
+        /// Handles the color frame data arriving from the sensor
+        /// </summary>
+        /// <param name="sender">object sending the event</param>
+        /// <param name="e">event arguments</param>
+        private void Reader_ColorFrameArrived(object sender, ColorFrameArrivedEventArgs e)
+        {
+            // ColorFrame is IDisposable
+            using (ColorFrame colorFrame = e.FrameReference.AcquireFrame())
+            {
+                if (colorFrame != null)
+                {
+                    FrameDescription colorFrameDescription = colorFrame.FrameDescription;
+
+                    using (KinectBuffer colorBuffer = colorFrame.LockRawImageBuffer())
+                    {
+                        colorBitmap.Lock();
+
+                        // verify data and write the new color frame data to the display bitmap
+                        if ((colorFrameDescription.Width == colorBitmap.PixelWidth) && (colorFrameDescription.Height == colorBitmap.PixelHeight))
+                        {
+                            colorFrame.CopyConvertedFrameDataToIntPtr(
+                                colorBitmap.BackBuffer,
+                                (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
+                                ColorImageFormat.Bgra);
+
+                            colorBitmap.AddDirtyRect(new Int32Rect(0, 0, colorBitmap.PixelWidth, colorBitmap.PixelHeight));
+                        }
+
+                        colorBitmap.Unlock();
+                    }
+                }
+            }
+        }
+
+		public void SetExercise(IExercise e)
 		{
-			currentExercise = e;
+			CurrentExercise = e;
 			synth.SpeakAsync("Starting a set of " + e.GetPhoneticName());
 			ExerciseLabel.Content = e.GetName();
 		}
