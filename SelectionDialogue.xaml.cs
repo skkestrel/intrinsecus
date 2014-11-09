@@ -8,8 +8,11 @@ namespace EhT.Intrinsecus
     /// </summary>
     public partial class SelectionDialogue
     {
+	    private Intrinsecus parent;
+
         public SelectionDialogue(Intrinsecus parent)
         {
+	        this.parent = parent;
             InitializeComponent();
         }
 
