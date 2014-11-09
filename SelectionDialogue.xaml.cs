@@ -40,18 +40,18 @@ namespace EhT.Intrinsecus
             this.parent.SingletonSelectionDialogue = null;
         }
 
-		private void DeadliftsButton_Click(object sender, RoutedEventArgs e)
+		/*private void DeadliftsButton_Click(object sender, RoutedEventArgs e)
 		{
             StartDeadlifts();
-		}
+		}*/
 
-        private void StartDeadlifts()
+        /*private void StartDeadlifts()
         {
             this.parent.SetExercise(new Deadlifts(), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
 
-        }
+        }*/
 
 		private void ShoulderPressesButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -155,9 +155,9 @@ namespace EhT.Intrinsecus
                     this.Close();
                     this.parent.SingletonSelectionDialogue = null;
                     break;
-                case AudioCommand.DEADLIFT:
+                /*case AudioCommand.DEADLIFT:
                     StartDeadlifts();
-                    break;
+                    break;*/
                 case AudioCommand.JUMPINGJACK:
                     StartJumpingJacks();
                     break;
