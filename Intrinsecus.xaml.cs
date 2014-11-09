@@ -113,11 +113,6 @@ namespace EhT.Intrinsecus
         private readonly List<Pen> bodyColors;
 
         /// <summary>
-        /// Current status text to display
-        /// </summary>
-        private string statusText;
-
-        /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
         public MainWindow()
@@ -184,10 +179,6 @@ namespace EhT.Intrinsecus
             // open the sensor
             kinectSensor.Open();
 
-            // set the status text
-            StatusText = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
-                                                            : Properties.Resources.NoSensorStatusText;
-
             // Create the drawing group we'll use for drawing
             drawingGroup = new DrawingGroup();
 
@@ -218,40 +209,20 @@ namespace EhT.Intrinsecus
         }
 
         /// <summary>
-        /// Gets or sets the current status text to display
-        /// </summary>
-        public string StatusText
-        {
-            get
-            {
-                return statusText;
-            }
-
-            set
-            {
-	            if (statusText == value) return;
-
-	            statusText = value;
-
-	            // notify any bound elements that the text has changed
-	            if (PropertyChanged != null)
-	            {
-		            PropertyChanged(this, new PropertyChangedEventArgs("StatusText"));
-	            }
-            }
-        }
-
-        /// <summary>
         /// Execute start up tasks
         /// </summary>
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void InvictusWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (bodyFrameReader != null)
             {
                 bodyFrameReader.FrameArrived += Reader_FrameArrived;
             }
+
+            // set the status text
+            StatusLabel.Content = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
+                                                            : Properties.Resources.NoSensorStatusText;
         }
 
         /// <summary>
@@ -491,7 +462,7 @@ namespace EhT.Intrinsecus
         private void Sensor_IsAvailableChanged(object sender, IsAvailableChangedEventArgs e)
         {
             // on failure, set the status text
-            StatusText = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
+			StatusLabel.Content = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
                                                             : Properties.Resources.SensorNotAvailableStatusText;
         }
 
