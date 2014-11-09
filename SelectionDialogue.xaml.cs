@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace EhT.Intrinsecus
 {
@@ -7,14 +8,6 @@ namespace EhT.Intrinsecus
     /// </summary>
     public partial class SelectionDialogue
     {
-        AudioSpeechEngine audioEngine;
-
-        public SelectionDialogue(AudioSpeechEngine audio)
-        {
-            audioEngine = audio;
-            InitializeComponent();
-        }
-
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
         {
             switch (e.command)
@@ -25,7 +18,7 @@ namespace EhT.Intrinsecus
                     break;
                 case AudioCommand.SQUAT:
                     break;
-                case AudioCommand.DEADLIFT:s
+                case AudioCommand.DEADLIFT:
                     break;
                 case AudioCommand.LUNGES:
                     break;
@@ -36,9 +29,37 @@ namespace EhT.Intrinsecus
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
+	    private Intrinsecus parent;
 
+        public SelectionDialogue(Intrinsecus parent)
+        {
+	        this.parent = parent;
+            InitializeComponent();
         }
+
+		private void SquatsButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void DeadliftsButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void ShoulderPressesButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void SplitLegLungesButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void SquatsButton1_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
     }
 }

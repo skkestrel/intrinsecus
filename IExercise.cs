@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EhT.Intrinsecus
 {
-    interface IExercise
+	public interface IExercise
     {
 		/// <summary>
 		/// update the exercise status

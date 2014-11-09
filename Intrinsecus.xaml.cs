@@ -388,7 +388,7 @@ namespace EhT.Intrinsecus
 
         private void SelectionDialogueButton_Click(object sender, RoutedEventArgs e)
         {
-            new SelectionDialogue(speechEngine).Show();
+            new SelectionDialogue(this).Show();
         }
     }
 }
