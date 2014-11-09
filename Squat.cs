@@ -25,7 +25,7 @@ namespace EhT.Intrinsecus
 
 			float HipKnee = HipPoint - KneePoint;
 
-			if (HipKnee > 0)
+			if (HipKnee > 0.10)
 			{
 				if (repComplete)
 				{
@@ -33,7 +33,7 @@ namespace EhT.Intrinsecus
 					repComplete = false;
 				}
 			}
-			else
+			else if (HipKnee < 0.05)
 			{
 				repComplete = true;
 				repflashtick = 0;
