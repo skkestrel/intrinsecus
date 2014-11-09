@@ -17,6 +17,7 @@ namespace EhT.Intrinsecus
         private double prevLeftAngle;
         private double prevRightAngle;
         private Intrinsecus parent;
+        private bool speechFlag;
 
         enum Transition
         {
@@ -30,7 +31,7 @@ namespace EhT.Intrinsecus
             parent.InstructionLabel.Content = "None";
             parent.ExerciseLabel.Content = GetName();
             this.parent = parent;
-
+            this.speechFlag = true;
             state = Transition.DownToUp;
             this.targetReps = goalReps;
 		}
@@ -57,12 +58,22 @@ namespace EhT.Intrinsecus
 
             double leftAngle = MathUtil.CosineLaw(leftWrist, leftShoulder, leftElbow);
             double rightAngle = MathUtil.CosineLaw(rightWrist, rightShoulder, rightElbow);
+           
+            if (speechFlag == true)
+            {
+                if (reps == 5) intrinsecus.synth.SpeakAsync("Only five left, you can do it!");
+                if (reps == 7) intrinsecus.synth.SpeakAsync("Three left, almost there!");
+                if (reps == 9) intrinsecus.synth.SpeakAsync("One left...");
+                if (reps == 10) intrinsecus.synth.SpeakAsync("You did your squats! Congratulations!");
+                speechFlag = false;
+            }
 
             if ((leftAngle < 70) && (rightAngle < 70))
             {
                 if (state == Transition.UpToDown)
                 {
                     reps++;
+                    speechFlag = false;
                     intrinsecus.InstructionLabel.Content = "Great shoulder press, keep going!";
                     state = Transition.DownToUp;
                 }
