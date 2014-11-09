@@ -22,19 +22,14 @@ namespace EhT.Intrinsecus
 
         public SplitLegLunges()
 		{
-            state = Transition.DownToUp;
+            state = Transition.UpToDown;
             reps = 0;
             repFlashTicks = 4;
 		}
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
         {
-            intrinsecus.InstructionLabel.Content = "Let's start with that left foot forward champ!";
-
-            if (reps == 10)
-            {
-                intrinsecus.InstructionLabel.Content = "Let's switch to the right foot now!";
-            }
+            intrinsecus.InstructionLabel.Content = "Alternate left and right foot forward champ!";
           
             CameraSpacePoint leftAnkle = body.Joints[JointType.AnkleLeft].Position;
             CameraSpacePoint leftKnee = body.Joints[JointType.KneeLeft].Position;
@@ -48,43 +43,36 @@ namespace EhT.Intrinsecus
             double leftLegAngle = MathUtil.CosineLaw(leftAnkle, centerHip, leftKnee);
             double rightLegAngle = MathUtil.CosineLaw(rightAnkle, centerHip, rightKnee);
 
-            double lean;
-
-            if (reps <= 10)
-            {
-                lean = MathUtil.CosineLaw(leftKnee, spine, centerHip);
-            }
-            else
-            {
-                lean = MathUtil.CosineLaw(rightKnee, spine, centerHip);
-            }
+            double leanL, leanR;
+            leanL = MathUtil.CosineLaw(leftKnee, spine, centerHip);
+            leanR = MathUtil.CosineLaw(rightKnee, spine, centerHip);
+    
 
             if ((leftLegAngle > 140) && (rightLegAngle > 140))
             {
-                if (state == Transition.UpToDown)
-                {
-                    reps++;
-                    state = Transition.DownToUp;
-                }
-            }
-            else if ((leftLegAngle < 100) && (rightLegAngle < 100))
-            {
                 if (state == Transition.DownToUp)
                 {
+                    reps++;
                     state = Transition.UpToDown;
-                    repFlashTicks = 0;
                 }
             }
-
-            if ((leftLegAngle < 75) || (rightLegAngle < 75))
+            else if ((leftLegAngle < 100) || (rightLegAngle < 100))
             {
-                intrinsecus.InstructionLabel.Content = "Put that foot further forward!";
+                if ((leanL < 70) || (leanL > 110))
+                {
+                    intrinsecus.InstructionLabel.Content = "Don't lean!";
+                }
+                else if (state == Transition.UpToDown)
+                {
+                    
+                    intrinsecus.InstructionLabel.Content = "Great lunge! Good form";
+                    state = Transition.DownToUp;
+                    repFlashTicks = 0;
+                }
+               
             }
 
-            if ((lean < 70) || (lean > 110))
-            {
-                intrinsecus.InstructionLabel.Content = "Don't lean!";
-            }
+           
 
             if (repFlashTicks++ <= 3)
             {
