@@ -497,7 +497,7 @@ namespace EhT.Intrinsecus
 
         private void SelectionDialogueButton_Click(object sender, RoutedEventArgs e)
         {
-            new SelectionDialogueWindow().Show();
+            new SelectionDialogue().Show();
         }
     }
 }
