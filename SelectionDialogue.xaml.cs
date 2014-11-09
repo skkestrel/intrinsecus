@@ -35,6 +35,7 @@ namespace EhT.Intrinsecus
         {
             this.parent.SetExercise(new Squat());
             this.Close();
+            this.parent.SingletonSelectionDialogue = null;
         }
 
 		private void DeadliftsButton_Click(object sender, RoutedEventArgs e)
@@ -46,6 +47,7 @@ namespace EhT.Intrinsecus
         {
             this.parent.SetExercise(new Deadlifts());
             this.Close();
+            this.parent.SingletonSelectionDialogue = null;
 
         }
 
@@ -58,6 +60,7 @@ namespace EhT.Intrinsecus
         {
             this.parent.SetExercise(new ShoulderPresses());
             this.Close();
+            this.parent.SingletonSelectionDialogue = null;
 
         }
 
@@ -70,6 +73,7 @@ namespace EhT.Intrinsecus
         {
             this.parent.SetExercise(new SplitLegLunges());
             this.Close();
+            this.parent.SingletonSelectionDialogue = null;
         }
 
 		private void JumpingJacksButton_Click(object sender, RoutedEventArgs e)
@@ -81,6 +85,7 @@ namespace EhT.Intrinsecus
         {
             this.parent.SetExercise(new JumpingJacks());
             this.Close();
+            this.parent.SingletonSelectionDialogue = null;
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
@@ -90,6 +95,7 @@ namespace EhT.Intrinsecus
                 // not implemented ENTER
                 case AudioCommand.BACK:
                     this.Close();
+                    this.parent.SingletonSelectionDialogue = null;
                     break;
                 case AudioCommand.SQUAT:
                     StartSquats();

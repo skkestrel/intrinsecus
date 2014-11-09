@@ -106,6 +106,11 @@ namespace EhT.Intrinsecus
 		/// </summary>
 		public IExercise CurrentExercise;
 
+        /// <summary>
+        /// the current exercise in play
+        /// </summary>
+        public SelectionDialogue SingletonSelectionDialogue = null;
+
 		/// <summary>
 		/// Radius of drawn hand circles
 		/// </summary>
@@ -429,8 +434,14 @@ namespace EhT.Intrinsecus
 			{
 				// not implemented BACK, ENTER, SQUAT, DEADLIFT, LUNGES, SHOULDERPRESS
 				case AudioCommand.SELECT:
-					new SelectionDialogue(this).Show();
-					break;
+                    if (SingletonSelectionDialogue == null)
+                    {
+                        SingletonSelectionDialogue = new SelectionDialogue(this);
+                        SingletonSelectionDialogue.Show();
+                    }
+                    else
+                        SingletonSelectionDialogue.Show();
+                        break;
 			}
 		}
 
