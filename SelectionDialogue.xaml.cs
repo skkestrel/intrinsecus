@@ -89,7 +89,7 @@ namespace EhT.Intrinsecus
             this.parent.SingletonSelectionDialogue = null;
         }
 
-        private void SetRepsButton_Click()
+        private void SetRepsButton_Click(object sender, RoutedEventArgs e)
         {
             SetReps();
         }
