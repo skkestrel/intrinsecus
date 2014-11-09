@@ -143,7 +143,7 @@ namespace EhT.Intrinsecus
                     tempReps = (int)(Math.Abs(body.Joints[JointType.HandLeft].Position.Y - body.Joints[JointType.HandRight].Position.Y) * 50);
                 }
             }
-            if (repflag)
+            if (!repflag)
             {
                 this.RepTextBox.Text = tempReps.ToString();
             }
