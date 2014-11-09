@@ -17,10 +17,20 @@ namespace EhT.Intrinsecus
         /// </summary>
         public ImageSource ImageSource { get; private set; }
 
+		/// <summary>
+		/// the target of reps
+		/// </summary>
+		private int targetReps = 10;
+
         /// <summary>
         /// Thickness of clip edge rectangles
         /// </summary>
         private const double ClipBoundsThickness = 10;
+
+		/// <summary>
+		/// Zpos clamp
+		/// </summary>
+		private const float ZPosClamp = 0.1F;
 
         /// <summary>
         /// Pen used for drawing bones that are currently inferred
@@ -73,6 +83,11 @@ namespace EhT.Intrinsecus
         private readonly List<Pen> bodyColors;
 
         private SpeechSynthesizer synth;
+
+		/// <summary>
+		/// the current exercise in play
+		/// </summary>
+		private IExercise currentExercise;
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -220,26 +235,12 @@ namespace EhT.Intrinsecus
 						bone.Update(body.Joints);
 			        }
 
-					/*
-			        // convert the joint points to depth (display) space
-			        Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
-
-			        foreach (JointType jointType in joints.Keys)
-			        {
-				        // sometimes the depth(Z) of an inferred joint may show as negative
-				        // clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
-				        CameraSpacePoint position = joints[jointType].Position;
-				        if (position.Z < 0)
-				        {
-					        position.Z = InferredZPositionClamp;
-				        }
-
-				        DepthSpacePoint depthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(position);
-				        jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
-			        }
-					*/
-
 			        DrawBody(dc, drawPen);
+		        }
+
+		        if (currentExercise.Update(dc) >= targetReps)
+		        {
+			        currentExercise = null;
 		        }
 
 		        // prevent drawing outside of our render area
@@ -312,8 +313,19 @@ namespace EhT.Intrinsecus
                 drawPen = drawingPen;
             }
 
-			DepthSpacePoint firstDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(bone.FirstJoint.Position);
-			DepthSpacePoint secondDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(bone.SecondJoint.Position);
+	        CameraSpacePoint point1 = bone.FirstJoint.Position;
+			if (point1.Z < 0f)
+			{
+				point1.Z = ZPosClamp;
+			}
+	        CameraSpacePoint point2 = bone.SecondJoint.Position;
+			if (point2.Z < 0f)
+			{
+				point2.Z = ZPosClamp;
+			}
+
+	        DepthSpacePoint firstDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(point1);
+	        DepthSpacePoint secondDepthSpacePoint = coordinateMapper.MapCameraPointToDepthSpace(point2);
 	        Point firstPoint = new Point(firstDepthSpacePoint.X, firstDepthSpacePoint.Y);
 	        Point secondPoint = new Point(secondDepthSpacePoint.X, secondDepthSpacePoint.Y);
 

@@ -77,6 +77,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bone.cs" />
+    <Compile Include="IExercise.cs" />
     <Compile Include="SelectionDialogue.xaml.cs">
       <DependentUpon>SelectionDialogue.xaml</DependentUpon>
     </Compile>
