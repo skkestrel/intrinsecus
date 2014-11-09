@@ -68,7 +68,7 @@ namespace EhT.Intrinsecus
 		/// <summary>
 		/// Reader for body frames
 		/// </summary>
-		private BodyFrameReader bodyFrameReader;
+		private readonly BodyFrameReader bodyFrameReader;
 
 		/// <summary>
 		/// color frame reader
@@ -245,7 +245,11 @@ namespace EhT.Intrinsecus
 			{
 				// BodyFrameReader is IDisposable
 				bodyFrameReader.Dispose();
-				bodyFrameReader = null;
+			}
+
+			if (colorFrameReader != null)
+			{
+				colorFrameReader.Dispose();
 			}
 
 			if (kinectSensor != null)
