@@ -27,14 +27,17 @@ namespace EhT.Intrinsecus
         Stopwatch watch;
 
         int count;
+        int targetCount;
 
-        public VerticalJumpTest()
+        public VerticalJumpTest(int tarCount)
         {
             count = 0;
             jumpDetected = false;
             watch = new Stopwatch();
             watch.Start();
             highestAcceleration = 0;
+            this.targetCount = tarCount;
+
         }
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
@@ -95,7 +98,7 @@ namespace EhT.Intrinsecus
 
         public int GetTargetReps()
         {
-            return 10;
+            return targetCount;
         }
 
         public string GetName()

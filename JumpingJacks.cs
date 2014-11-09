@@ -7,6 +7,13 @@ namespace EhT.Intrinsecus
     {
         private Transition state = Transition.DOWNTOUP;
         private int reps = 0;
+        private int targetReps;
+
+/*        public void JumpingJacks(int tarReps)
+        {
+            state = Transition.DOWNTOUP;
+                targetReps = 0;
+        } */
 
         enum Transition
         {
@@ -41,7 +48,7 @@ namespace EhT.Intrinsecus
 
         public int GetTargetReps()
         {
-            return 10;
+            return targetReps;
         }
 
         public string GetName()

@@ -99,7 +99,7 @@ namespace EhT.Intrinsecus
 
         private void StartVerticalJump()
         {
-            this.parent.SetExercise(new VerticalJumpTest(), reps);
+            this.parent.SetExercise(new VerticalJumpTest(reps), reps);
             this.Close();
         }
         private void LateralFlyButton_Click(object sender, RoutedEventArgs e)
