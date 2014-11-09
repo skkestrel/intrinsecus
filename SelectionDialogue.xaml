@@ -24,7 +24,6 @@
         <Button x:Name="JumpingJacksButton" Content="Jumping Jacks" Margin="10" Click="JumpingJacksButton_Click" Grid.Row="4" Grid.Column="0"/>
         <Label Content="Reps:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.105,-0.25" Height="44" Width="126" FontSize="18"/>
         <TextBox x:Name="RepTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="10,0,0,13" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="120" ToolTip="Set the number of reps you wish to performs"/>
-        <Button x:Name="SetRepsButton" Content="Set Reps" Margin="10" Click="SetRepsButton_Click" Grid.Row="2" Grid.Column="2"/>
 
         <Button x:Name="VerticalJumpButton" Content="Vertical Jump Test" Margin="10" Click="VerticalJumpButton_Click" Grid.Row="5"/>
         <Button x:Name="LateralFlyButton" Content="Lateral Fly Test" Margin="10" Click="LateralFlyButton_Click" Grid.Row="6"/>

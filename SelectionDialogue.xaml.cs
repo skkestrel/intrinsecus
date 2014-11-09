@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Microsoft.Kinect;
 
 namespace EhT.Intrinsecus
 {
@@ -34,7 +35,7 @@ namespace EhT.Intrinsecus
 
         private void StartSquats()
         {
-            this.parent.SetExercise(new Squat());
+            this.parent.SetExercise(new Squat(), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }
@@ -46,7 +47,7 @@ namespace EhT.Intrinsecus
 
         private void StartDeadlifts()
         {
-            this.parent.SetExercise(new Deadlifts());
+            this.parent.SetExercise(new Deadlifts(), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
 
@@ -59,7 +60,7 @@ namespace EhT.Intrinsecus
 
         private void StartShoulderPresses()
         {
-            this.parent.SetExercise(new ShoulderPresses());
+            this.parent.SetExercise(new ShoulderPresses(), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
 
@@ -72,7 +73,7 @@ namespace EhT.Intrinsecus
 
         private void StartSplitLegLunges()
         {
-            this.parent.SetExercise(new SplitLegLunges());
+            this.parent.SetExercise(new SplitLegLunges(), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }
@@ -84,7 +85,7 @@ namespace EhT.Intrinsecus
 
         private void StartJumpingJacks()
         {
-            this.parent.SetExercise(new JumpingJacks());
+            this.parent.SetExercise(new JumpingJacks(), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }
@@ -96,7 +97,7 @@ namespace EhT.Intrinsecus
 
         private void StartVerticalJump()
         {
-            this.parent.SetExercise(new VerticalJumpTest());
+            this.parent.SetExercise(new VerticalJumpTest(), reps);
             this.Close();
         }
         private void LateralFlyButton_Click(object sender, RoutedEventArgs e)
@@ -106,18 +107,23 @@ namespace EhT.Intrinsecus
 
         private void StartLateralFly()
         {
-            this.parent.SetExercise(new LateralFly());
+            this.parent.SetExercise(new LateralFly(), reps);
             this.Close();
-        }
-        private void SetRepsButton_Click(object sender, RoutedEventArgs e)
-        {
-            SetReps();
         }
 
         private void SetReps()
         {
             string textBoxContents = this.RepTextBox.Text;
             Int32.TryParse(textBoxContents, out reps);
+
+            foreach (Body body in parent.Bodies)
+            {
+                if (body.IsTracked)
+                {
+                    reps = (int) Math.Abs(body.Joints[JointType.HandLeft].Position.Y - body.Joints[JointType.HandRight].Position.Y) * 50;
+                }
+            }
+            
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
@@ -149,6 +155,9 @@ namespace EhT.Intrinsecus
                     break;
                 case AudioCommand.VERTICALJUMP:
                     StartVerticalJump();
+                    break;
+                case AudioCommand.REPCOMMAND:
+                    SetReps();
                     break;
             }
         }

@@ -75,7 +75,7 @@ namespace EhT.Intrinsecus
 		/// <summary>
 		/// Array for the bodies
 		/// </summary>
-		private Body[] bodies;
+		public Body[] Bodies;
 
 		/// <summary>
 		/// Width of display (depth space)
@@ -289,15 +289,15 @@ namespace EhT.Intrinsecus
 			{
 				if (bodyFrame != null)
 				{
-					if (bodies == null)
+					if (Bodies == null)
 					{
-						bodies = new Body[bodyFrame.BodyCount];
+						Bodies = new Body[bodyFrame.BodyCount];
 					}
 
 					// The first time GetAndRefreshBodyData is called, Kinect will allocate each Body in the array.
 					// As long as those body objects are not disposed and not set to null in the array,
 					// those body objects will be re-used.
-					bodyFrame.GetAndRefreshBodyData(bodies);
+					bodyFrame.GetAndRefreshBodyData(Bodies);
 					dataReceived = true;
 				}
 			}
@@ -318,7 +318,7 @@ namespace EhT.Intrinsecus
 						colorBitmap.PixelWidth * ratio, colorBitmap.PixelHeight * ratio));
 
 				int penIndex = 0;
-				foreach (Body body in bodies)
+				foreach (Body body in Bodies)
 				{
 					Pen drawPen = bodyColors[penIndex++];
 
@@ -418,7 +418,7 @@ namespace EhT.Intrinsecus
 			return new Point(depthSpacePoint1.X, depthSpacePoint1.Y);
 		}
 
-		public void SetExercise(IExercise e)
+		public void SetExercise(IExercise e, int reps = 10)
 		{
 			CurrentExercise = e;
 
