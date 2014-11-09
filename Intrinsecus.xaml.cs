@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Kinect;
@@ -82,6 +83,8 @@ namespace EhT.Intrinsecus
         /// </summary>
         private readonly List<Pen> bodyColors;
 
+        private SpeechSynthesizer synth;
+
         /// <summary>
         /// the current exercise in play
         /// </summary>
@@ -139,6 +142,9 @@ namespace EhT.Intrinsecus
 
             // use the window object as the view model in this simple example
             DataContext = this;
+
+            synth = new SpeechSynthesizer();
+            synth.SetOutputToDefaultAudioDevice();
 
             // initialize the components (controls) of the window
             InitializeComponent();
@@ -246,28 +252,15 @@ namespace EhT.Intrinsecus
         public void setCurrentExcersize(IExercise e)
         {
             currentExercise = e;
+            synth.SpeakAsync("Starting a set of " + e.getPhoneticName());
+            ExerciseLabel.Content = e.getName();
         }
 
         void AudioCommandReceived(object sender, AudioCommandEventArgs e)
         {
             switch (e.command)
-            {
-                case AudioCommand.BACK:
-                    break;
-                case AudioCommand.ENTER:
-                    break;
-                case AudioCommand.SQUAT:
-                    ExerciseLabel.Content = "Squat";
-                    break;
-                case AudioCommand.DEADLIFT:
-                    ExerciseLabel.Content = "Deadlift";
-                    break;
-                case AudioCommand.LUNGES:
-                    ExerciseLabel.Content = "Lunges";
-                    break;
-                case AudioCommand.SHOULDERPRESS:
-                    ExerciseLabel.Content = "Shoulder Press";
-                    break;
+            {        
+                // not implemented BACK, ENTER, SQUAT, DEADLIFT, LUNGES, SHOULDERPRESS
                 case AudioCommand.SELECT:
                     new SelectionDialogue(this).Show();
                     break;

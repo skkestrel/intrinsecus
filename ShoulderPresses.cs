@@ -8,10 +8,19 @@ namespace EhT.Intrinsecus
 {
     class ShoulderPresses : IExercise
     {
-
         public int Update(System.Windows.Media.DrawingContext ctx)
         {
             return 0;
+        }
+
+        public string getName()
+        {
+            return "Shoulder Press";
+        }
+
+        public string getPhoneticName()
+        {
+            return "shoulder presses";
         }
     }
 }

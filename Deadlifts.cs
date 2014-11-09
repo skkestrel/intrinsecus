@@ -12,8 +12,15 @@ namespace EhT.Intrinsecus
         {
             return 0;
         }
+
+        public string getName()
+        {
+            return "Deadlift";
+        }
+
+        public string getPhoneticName()
+        {
+            return "dead lifts";
+        }
     }
-
-    
-
 }
