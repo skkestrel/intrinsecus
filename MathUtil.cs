@@ -22,7 +22,7 @@ namespace EhT.Intrinsecus
 
             angle = Math.Acos((lengthCB*lengthCB + lengthCA*lengthCA - lengthAB*lengthAB)/(2*lengthCA*lengthCB));
             angle *= 180 / Math.PI;
-            return 0;
+            return angle;
         }
     }
 }
