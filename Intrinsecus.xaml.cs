@@ -243,6 +243,8 @@ namespace EhT.Intrinsecus
 		/// <param name="e">event arguments</param>
         private void IntrinsecusWindow_Closing(object sender, CancelEventArgs e)
 		{
+			CurrentExercise = null;
+
 			if (bodyFrameReader != null)
 			{
 				// BodyFrameReader is IDisposable
