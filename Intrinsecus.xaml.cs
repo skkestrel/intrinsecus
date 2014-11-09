@@ -232,6 +232,8 @@ namespace EhT.Intrinsecus
 			// set the status text
 			StatusLabel.Content = kinectSensor.IsAvailable ? Properties.Resources.RunningStatusText
 															: Properties.Resources.NoSensorStatusText;
+
+			RepCountLabel.Content = "";
 		}
 
 		/// <summary>
@@ -333,10 +335,15 @@ namespace EhT.Intrinsecus
 						DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
 						DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
 
-						if (CurrentExercise == null) continue;
+						if (CurrentExercise == null)
+						{
+							RepCountLabel.Content = "";
+							continue;
+						}
 
 						int t = CurrentExercise.Update(body, dc, this);
-						RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture);
+						RepCountLabel.Content = t.ToString(CultureInfo.InvariantCulture) + "/" +
+						                        targetReps.ToString(CultureInfo.InvariantCulture);
 						if (t >= targetReps)
 						{
 							SetExercise(null);
