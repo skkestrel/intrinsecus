@@ -13,6 +13,7 @@ namespace EhT.Intrinsecus
         CameraSpacePoint SpineBase;
         CameraSpacePoint Knee;
         CameraSpacePoint Ankle;
+        bool backstraight;
         enum Transition
         {
             UPTODOWN,
@@ -57,30 +58,33 @@ namespace EhT.Intrinsecus
             }
 
             double anklekneehip = MathUtil.CosineLaw(Ankle, SpineBase, Knee);
+           
+            TorsoStraight();
+            intrinsecus.InstructionLabel.Content = "MathUtil.CosineLaw(Neck, SpineMid, SpineShoulder) = " + MathUtil.CosineLaw(Neck, SpineMid, SpineShoulder).ToString();
             if (state == Transition.DOWNTOUP)
             {
                 //complete 
-                if (TorsoStraight() && (Math.Abs(Neck.Y - SpineBase.Y) < 0.1))
+                if (backstraight && (Math.Abs(Neck.Y - SpineBase.Y) < 0.1))
                 {
                     //now upright
-                    intrinsecus.InstructionLabel.Content = "Upright! Now go down!";
+                   // intrinsecus.InstructionLabel.Content = "Upright! Now go down!";
                     state = Transition.UPTODOWN;
                     if (repComplete == false) repComplete = true;
 
                 }
                 else
                 {
-                    intrinsecus.InstructionLabel.Content = "Almost there, back straight and tall!";
+                    //intrinsecus.InstructionLabel.Content = "Almost there, back straight and tall!";
                 }
             }
 
             else
             {
-                if (TorsoStraight() && (anklekneehip < 120 && anklekneehip > 90))
+                if (backstraight && (anklekneehip < 120 && anklekneehip > 90))
                 {
                     //good
-                    intrinsecus.InstructionLabel.Content = "You're all the way down. Now go up!";
-
+                  //  intrinsecus.InstructionLabel.Content = "You're all the way down. Now go up!";
+                    state = Transition.DOWNTOUP;
                     if (repComplete == false)
                     {
                         repComplete = true;
@@ -89,7 +93,7 @@ namespace EhT.Intrinsecus
                 }
                 else
                 {
-                    intrinsecus.InstructionLabel.Content = "Get lower, get lower!";
+                //    intrinsecus.InstructionLabel.Content = "Get lower, get lower!";
                 }
             }
             
@@ -154,10 +158,10 @@ namespace EhT.Intrinsecus
             return 10;
         }
 
-        private bool TorsoStraight()
+        private void TorsoStraight()
         {
-            if ((MathUtil.CosineLaw(Neck, SpineMid, SpineShoulder) > 170) && (MathUtil.CosineLaw(SpineShoulder, SpineBase, SpineMid) > 170)) return true;
-            else return false;
+            if ((MathUtil.CosineLaw(Neck, SpineMid, SpineShoulder) > 170) && (MathUtil.CosineLaw(SpineShoulder, SpineBase, SpineMid) > 170)) backstraight = true;
+            else backstraight =  false;
         }
 
         public string GetName()
