@@ -37,7 +37,7 @@ namespace EhT.Intrinsecus
 
         private void StartSquats()
         {
-            this.parent.SetExercise(new Squat(), reps);
+            this.parent.SetExercise(new Squat(reps), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }

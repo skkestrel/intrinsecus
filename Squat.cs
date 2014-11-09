@@ -10,6 +10,7 @@ namespace EhT.Intrinsecus
 	{
 		private int repflashtick = 0;
 		private int reps = 0;
+        private int targetReps;
 
 		private bool repComplete;
 
@@ -21,9 +22,10 @@ namespace EhT.Intrinsecus
 
         private Transition state = Transition.UPTODOWN;
 
-		public Squat()
+		public Squat(int tarReps)
 		{
 			reps = 0;
+            this.targetReps = tarReps;
 		}
 
 		public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
@@ -134,7 +136,7 @@ namespace EhT.Intrinsecus
 
         public int GetTargetReps()
         {
-            return 10;
+            return targetReps;
         }
 
 		public string GetName()
