@@ -13,6 +13,8 @@ namespace EhT.Intrinsecus
         private Transition state = Transition.DownToUp;
         private int reps = 0;
         private int repFlashTicks = 4;
+        private double prevLeftAngle;
+        private double prevRightAngle;
 
         enum Transition
         {
@@ -44,6 +46,7 @@ namespace EhT.Intrinsecus
                 if (state == Transition.UpToDown)
                 {
                     reps++;
+                    intrinsecus.InstructionLabel.Content = "Great shoulder press, keep going!";
                     state = Transition.DownToUp;
                 }
             }
@@ -52,9 +55,18 @@ namespace EhT.Intrinsecus
                 if (state == Transition.DownToUp)
                 {
                     state = Transition.UpToDown;
+                    intrinsecus.InstructionLabel.Content = "";
                     repFlashTicks = 0;
                 }
             }
+            else if(reps>1)
+            {
+                if ((state == Transition.DownToUp) && ((leftAngle < prevRightAngle) || (rightAngle < prevRightAngle)))
+                {
+                    intrinsecus.InstructionLabel.Content = "You need to keep straightening those arms bro";
+                }
+            }
+          
 
             if (repFlashTicks++ <= 3)
             {
@@ -69,6 +81,9 @@ namespace EhT.Intrinsecus
                 ctx.DrawLine(highlightPen, intrinsecus.CameraToScreen(body.Joints[JointType.ElbowRight].Position),
                     intrinsecus.CameraToScreen(body.Joints[JointType.WristRight].Position));
             }
+
+            prevLeftAngle = leftAngle;
+            prevRightAngle = rightAngle;
 
             return reps;
         }
