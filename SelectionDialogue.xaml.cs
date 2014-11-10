@@ -23,6 +23,7 @@ namespace EhT.Intrinsecus
             
             InitializeComponent();
             repflag = false;
+            reps = 10;
         }
 
          ~SelectionDialogue()
@@ -87,7 +88,7 @@ namespace EhT.Intrinsecus
 
         private void StartJumpingJacks()
         {
-            this.parent.SetExercise(new JumpingJacks(), reps);
+            this.parent.SetExercise(new JumpingJacks(reps), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }
@@ -109,7 +110,7 @@ namespace EhT.Intrinsecus
 
         private void StartLateralFly()
         {
-            this.parent.SetExercise(new LateralFly(), reps);
+            this.parent.SetExercise(new LateralFly(reps), reps);
             this.Close();
         }
 

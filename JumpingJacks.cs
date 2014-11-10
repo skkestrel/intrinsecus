@@ -5,16 +5,17 @@ namespace EhT.Intrinsecus
 {
     class JumpingJacks : IExercise
     {
-        private Transition state = Transition.DOWNTOUP;
-        private int reps = 0;
+        private Transition state;
+        private int reps;
         private double prevGroin;
         private int targetReps;
 
-/*        public void JumpingJacks(int tarReps)
+        public JumpingJacks(int tarReps)
         {
+            reps = 0;
             state = Transition.DOWNTOUP;
-                targetReps = 0;
-        } */
+            this.targetReps = tarReps;
+        }
 
         enum Transition
         {

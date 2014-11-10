@@ -10,9 +10,10 @@ namespace EhT.Intrinsecus
 {
     class LateralFly : IExercise
     {
-        private Transition state = Transition.DownToUp;
-        private int reps = 0;
-        private int repFlashTicks = 4;
+        private Transition state;
+        private int reps;
+        private int repFlashTicks;
+        private int targetReps;
 
         enum Transition
         {
@@ -20,10 +21,13 @@ namespace EhT.Intrinsecus
             DownToUp,
         }
 
-        public LateralFly()
+        public LateralFly(int tarReps)
         {
             state = Transition.DownToUp;
             reps = 0;
+            repFlashTicks = 4;
+            state = Transition.DownToUp;
+            this.targetReps = tarReps;
         }
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
@@ -76,7 +80,7 @@ namespace EhT.Intrinsecus
 
         public int GetTargetReps()
         {
-            return 10;
+            return targetReps;
         }
 
         public string GetName()
