@@ -6,9 +6,20 @@ namespace EhT.Intrinsecus
 {
     class Deadlifts : IExercise
     {
-        private int repcount;
+        Transition state;
+        enum Transition
+        {
+            UPTODOWN,
+            DOWNTOUP
+        }
 
+        private int repcount;
         private bool repComplete;
+
+        public Deadlifts()
+        {
+            state = Transition.DOWNTOUP;
+        }
 
 
         public int Update(Body body, DrawingContext ctx, Intrinsecus intrinsecus)
@@ -46,18 +57,35 @@ namespace EhT.Intrinsecus
             {
                 if ((System.Math.Abs(Neck.X - SpineShoulder.X) < .10) && (System.Math.Abs(SpineShoulder.X - SpineMid.X) < .10) && (System.Math.Abs(SpineMid.X - SpineBase.X) < .10))
                 {
-                    repcount++;
-                    repComplete = true;
+                    
+                    if (state == Transition.DOWNTOUP)
+                    {
+                        repcount++;
+                        repComplete = true;
+                        intrinsecus.InstructionLabel.Content = "Back Straight, Great Rep. Good Form. Way to Go.";
+                        state = Transition.UPTODOWN;
+                    }
                 }
+
+                else intrinsecus.InstructionLabel.Content = "Bro, back ain't straight. You ain't gonna get no gains with that form.";
             }
               //logic down
             else
             {
                 if (HipKnee < 0.05)
 			    {
-				repComplete = false;
+                    if (state == Transition.UPTODOWN)
+                    {
+                        intrinsecus.InstructionLabel.Content = "Bro, your low. Good job. Tight. Nice Form.";
+                        repComplete = false;
+                        state = Transition.DOWNTOUP;
+                    }
 	//	repflashtick = 0;
 			    }
+                else
+                {
+                    intrinsecus.InstructionLabel.Content = "Bro. Need to get lower. No pain, no gain.";
+                }
 
             }
 
@@ -71,6 +99,11 @@ namespace EhT.Intrinsecus
 
 
             return 0;
+        }
+
+        public int GetTargetReps()
+        {
+            return 10;
         }
 
         private bool TorsoStraight()
