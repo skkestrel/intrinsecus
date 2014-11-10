@@ -44,10 +44,11 @@ namespace EhT.Intrinsecus
                 if (state == Transition.UpToDown)
                 {
                     reps++;
+                    intrinsecus.InstructionLabel.Content = "You're flying bro!";
                     state = Transition.DownToUp;
                 }
             }
-            else if ((leftAngle > 160) && (rightAngle > 160))
+            else if ((leftAngle > 175) && (rightAngle > 175))
             {
                 if (state == Transition.DownToUp)
                 {
