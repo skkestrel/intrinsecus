@@ -62,7 +62,7 @@ namespace EhT.Intrinsecus
 
         private void StartShoulderPresses()
         {
-            this.parent.SetExercise(new ShoulderPresses(), reps);
+            this.parent.SetExercise(new ShoulderPresses(reps), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
 
@@ -75,7 +75,7 @@ namespace EhT.Intrinsecus
 
         private void StartSplitLegLunges()
         {
-            this.parent.SetExercise(new SplitLegLunges(), reps);
+            this.parent.SetExercise(new SplitLegLunges(reps), reps);
             this.Close();
             this.parent.SingletonSelectionDialogue = null;
         }
